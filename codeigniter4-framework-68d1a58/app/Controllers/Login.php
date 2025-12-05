@@ -5,16 +5,20 @@ namespace App\Controllers;
 use App\Models\Users;
 use CodeIgniter\Controller;
 
+/**
+ * Controlleur pour permettre à l'utilisateur de se connecter à son compte déjà créé
+ */
 class Login extends Controller {
-    protected $userModel;
-
-    public function __construct() {
-        $this->userModel = new Users();
-    }
-
+    /**
+     * Fonction de connexion principale
+     *
+     * @return \CodeIgniter\HTTP\RedirectResponse
+     */
     public function login() {
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
+
+        $remember = $this->request->getPost('remember') === '1';
 
         $auth = service('auth');
         $credentials = [
@@ -22,14 +26,12 @@ class Login extends Controller {
             'password' => $password,
         ];
 
-        $result = $auth->attempt($credentials);
+        $result = $auth
+            ->remember($remember)
+            ->attempt($credentials);
 
         if (! $result->isOk()) {
             return redirect()->to('/login?error=2');
-        }
-
-        if ($this->request->getPost('rememberme') != null) {
-            //TODO: token generation and storing
         }
 
         return redirect("/");

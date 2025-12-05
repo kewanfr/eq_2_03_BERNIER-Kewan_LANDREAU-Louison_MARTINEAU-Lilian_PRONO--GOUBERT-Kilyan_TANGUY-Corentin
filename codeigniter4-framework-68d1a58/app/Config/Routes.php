@@ -9,6 +9,8 @@ $routes->get('/', 'Home::index');
 
 $routes->get('/login', 'Auth::login');
 $routes->get('/register', 'Auth::register');
+$routes->get('/cookies/accept', 'Cookies::accept');
+$routes->get('/cookies/decline', 'Cookies::decline');
 
 $routes->post('/auth/login', 'Login::login');
 $routes->post('/auth/register', 'Register::register');

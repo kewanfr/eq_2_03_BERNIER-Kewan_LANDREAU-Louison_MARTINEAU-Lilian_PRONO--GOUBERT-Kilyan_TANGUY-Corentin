@@ -7,10 +7,16 @@ use App\Models\Users;
 use CodeIgniter\Shield\Controllers\RegisterController;
 use CodeIgniter\Shield\Models\UserModel;
 
+/**
+ * Controlleur permettant à l'utilisateur de se créer un nouveau compte
+ */
 class Register extends RegisterController
 {
-
-
+    /**
+     * Fonction d'enregistrement principale.
+     *
+     * @return \CodeIgniter\HTTP\RedirectResponse
+     */
     public function register() {
         $username = $this->request->getPost('username');
         $email = $this->request->getPost('email');
