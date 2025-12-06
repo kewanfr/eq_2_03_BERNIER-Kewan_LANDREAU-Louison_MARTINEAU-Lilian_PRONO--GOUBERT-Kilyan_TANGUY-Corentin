@@ -2,38 +2,28 @@
 
 namespace App\Controllers;
 
-use App\Models\Users;
-use CodeIgniter\Controller;
+use CodeIgniter\Shield\Controllers\LoginController;
+use CodeIgniter\HTTP\RedirectResponse;
 
-/**
- * Controlleur pour permettre à l'utilisateur de se connecter à son compte déjà créé
- */
-class Login extends Controller {
+class Login extends LoginController
+{
+    //retourne la vue pour permettre à l'utilisateur de se connecter.
+    public function loginView()
+    {
+        return parent::loginView();
+    }
+
     /**
      * Fonction de connexion principale
      *
-     * @return \CodeIgniter\HTTP\RedirectResponse
+     * @return RedirectResponse
      */
-    public function login() {
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+    public function loginAction(): RedirectResponse {
+        return parent::loginAction();
+    }
 
-        $remember = $this->request->getPost('remember') === '1';
-
-        $auth = service('auth');
-        $credentials = [
-            'email' => $email,
-            'password' => $password,
-        ];
-
-        $result = $auth
-            ->remember($remember)
-            ->attempt($credentials);
-
-        if (! $result->isOk()) {
-            return redirect()->to('/login?error=2');
-        }
-
-        return redirect("/");
+    public function logoutAction(): RedirectResponse
+    {
+        return parent::logoutAction();
     }
 }

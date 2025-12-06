@@ -21,7 +21,7 @@ class AuthCheck implements FilterInterface
         $auth = service('auth');
 
         if (! $auth->loggedIn()) {
-            return redirect()->to('/login');
+            return $request;
         }
 
         $user = $auth->user();

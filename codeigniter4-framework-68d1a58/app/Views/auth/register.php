@@ -1,3 +1,7 @@
+<?php
+namespace CodeIgniter\Views\auth;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,21 +18,15 @@
     <label>S'inscrire</label>
     <div class="separator color-primary"></div>
 
-    <div class="errormessage">
-        <label>
-            <?php
-            if (isset($_GET['error'])) {
-                if ($_GET['error'] == 1) {
-                    echo "Le mot de passe et sa confirmation sont différents.";
-                } else if ($_GET['error'] == 2) {
-                    echo "Une erreur est survenue lors de la création du compte.";
-                } else {
-                    echo "unknown error code: " . $_GET['error'];
-                }
-            }
-            ?>
-        </label>
-    </div>
+    <?php if (session('errors') !== null && !empty(session('errors'))): ?>
+        <div class="errormessage">
+            <ul>
+                <?php foreach (session('errors') as $error): ?>
+                    <li><?= esc($error) ?></li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
 
     <form action="/auth/register" method="post">
 
@@ -41,12 +39,12 @@
         <label for="password">Mot de passe:</label><br>
         <input id="password" type="password" name="password" class="textfield"><br>
 
-        <label for="passwordconf">Confirmez le mot de passe:</label><br>
-        <input id="passwordconf" type="password" name="passwordconf" class="textfield"><br>
+        <label for="password_confirm">Confirmez le mot de passe:</label><br>
+        <input id="password_confirm" type="password" name="password_confirm" class="textfield"><br>
 
-        <div class="rememberme">
-            <input id="rememberme" type="checkbox" name="rememberme">
-            <label for="rememberme">Se souvenir de moi</label><br>
+        <div class="remember">
+            <input id="remember" type="checkbox" name="remember">
+            <label for="remember">Se souvenir de moi</label><br>
         </div>
 
         <input id="submit" type="submit" value="S'inscrire">

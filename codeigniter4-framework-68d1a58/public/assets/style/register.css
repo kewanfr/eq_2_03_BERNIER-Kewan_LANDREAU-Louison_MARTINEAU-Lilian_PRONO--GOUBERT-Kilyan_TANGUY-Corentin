@@ -78,4 +78,10 @@ a:hover {
 .errormessage {
     color: var(--error);
     margin-left: 5px;
+    margin-right: 5px;
+}
+
+.errormessage > * {
+    padding: 0;
+    margin: 0;
 }

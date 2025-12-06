@@ -1,3 +1,7 @@
+<?php
+namespace CodeIgniter\Views\auth;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,21 +18,20 @@
     <label>Se connecter</label>
     <div class="separator color-primary"></div>
 
-    <div class="errormessage">
-        <label>
-            <?php
-            if (isset($_GET['error'])) {
-                if ($_GET['error'] == 1) {
-                    echo "password is incorrect.";
-                } else if ($_GET['error'] == 2) {
-                    echo "email is incorrect.";
-                } else {
-                    echo "unknown error code: " . $_GET['error'];
-                }
-            }
-            ?>
-        </label>
-    </div>
+    <?php if (session('error') !== null) : ?>
+        <div class="errormessage" role="alert"><?= esc(session('error')) ?></div>
+    <?php elseif (session('errors') !== null) : ?>
+        <div class="errormessage" role="alert">
+            <?php if (is_array(session('errors'))) : ?>
+                <?php foreach (session('errors') as $error) : ?>
+                    <?= esc($error) ?>
+                    <br>
+                <?php endforeach ?>
+            <?php else : ?>
+                <?= esc(session('errors')) ?>
+            <?php endif ?>
+        </div>
+    <?php endif ?>
 
     <form action="/auth/login" method="post">
         <label for="email">E-mail:</label><br>
@@ -39,9 +42,9 @@
 
         <a href="" class="forgot-password">Mot de passe oublié?</a><br>
 
-        <div class="rememberme">
-        <input id="rememberme" type="checkbox" name="rememberme">
-        <label for="rememberme">Se souvenir de moi</label><br>
+        <div class="remember">
+        <input id="remember" type="checkbox" name="remember">
+        <label for="remember">Se souvenir de moi</label><br>
         </div>
 
         <input id="submit" type="submit" value="Se connecter">
