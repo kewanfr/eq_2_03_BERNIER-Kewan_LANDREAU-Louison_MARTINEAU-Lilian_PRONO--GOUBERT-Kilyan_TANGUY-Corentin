@@ -67,13 +67,13 @@ class UserSeeder extends Seeder
             ]);
             $userId = (int) $this->db->insertID();
 
-            // Identité email+password combinée (type = 'email_password')
+            // Identité email+password (Shield: email dans secret, hash dans secret2)
             $hash = password_hash($data['password'], PASSWORD_DEFAULT);
             $this->db->table('auth_identities')->insert([
                 'user_id'     => $userId,
                 'type'        => 'email_password',
-                'name'        => $data['email'],
-                'secret'      => $hash,
+                'secret'      => $data['email'],
+                'secret2'     => $hash,
                 'force_reset' => 0,
                 'created_at'  => $now,
                 'updated_at'  => $now,
