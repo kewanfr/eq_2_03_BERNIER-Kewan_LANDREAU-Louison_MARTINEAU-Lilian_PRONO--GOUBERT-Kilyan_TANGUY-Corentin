@@ -5,9 +5,9 @@ namespace App\Controllers;
 use App\Models\ProductModel;
 
 /**
- * Controlleur pour afficher la page d'accueil
+ * Contrôleur pour la page produits uniquement
  */
-class Home extends BaseController
+class Products extends BaseController
 {
     public function index(): string
     {
@@ -34,6 +34,6 @@ class Home extends BaseController
             "currentTag" => $tag
         ];
 
-        return view('layout/main', $data);
+        return view('products_page', $data);
     }
 }

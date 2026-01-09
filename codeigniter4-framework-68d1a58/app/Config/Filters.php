@@ -13,6 +13,7 @@ use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\AuthCheck;
+use App\Filters\RoleFilter;
 
 class Filters extends BaseFilters
 {
@@ -35,7 +36,8 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'authcheck'     => AuthCheck::class
+        'authcheck'     => AuthCheck::class,
+        'role'          => RoleFilter::class
     ];
 
     /**

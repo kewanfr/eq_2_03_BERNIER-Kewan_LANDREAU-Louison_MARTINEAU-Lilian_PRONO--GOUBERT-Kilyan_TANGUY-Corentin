@@ -34,8 +34,8 @@ namespace CodeIgniter\Views\auth;
     <?php endif ?>
 
     <form action="/auth/login" method="post">
-        <label for="email">E-mail:</label><br>
-        <input id="email" type="email" name="email" class="textfield"><br>
+        <label for="email">Email ou nom d'utilisateur:</label><br>
+        <input id="email" type="text" name="email" class="textfield" autocomplete="username" placeholder="Email ou nom d'utilisateur"><br>
 
         <label for="password">Mot de passe:</label><br>
         <input id="password" type="password" name="password" class="textfield"><br>

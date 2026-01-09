@@ -12,7 +12,7 @@ class ProductModel extends Model
 {
     protected $table = 'products';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['name', 'desc', 'img_src', 'price', 'quantity'];
+    protected $allowedFields = ['name', 'desc', 'img_src', 'price', 'quantity', 'category', 'tags'];
     protected $returnType = 'array';
     protected $useTimestamps = false;
 
@@ -66,6 +66,54 @@ class ProductModel extends Model
     public function getProductsByKeyword(string $keyword)
     {
         return $this->like('desc', $keyword)->findAll();
+    }
+
+    // Recherche et filtre les produits
+    public function searchAndFilter($search = null, $category = null, $tag = null)
+    {
+        $builder = $this->builder();
+        
+        if ($search) {
+            $builder->groupStart()
+                ->like('name', $search)
+                ->orLike('desc', $search)
+                ->groupEnd();
+        }
+        
+        if ($category) {
+            $builder->where('category', $category);
+        }
+        
+        if ($tag) {
+            $builder->like('tags', $tag);
+        }
+        
+        return $builder->get()->getResultArray();
+    }
+
+    // Récupère toutes les catégories
+    public function getCategories()
+    {
+        return $this->select('category')
+            ->distinct()
+            ->where('category IS NOT NULL')
+            ->findAll();
+    }
+
+    // Récupère tous les tags
+    public function getAllTags()
+    {
+        $products = $this->select('tags')->where('tags IS NOT NULL')->findAll();
+        $allTags = [];
+        
+        foreach ($products as $product) {
+            if (!empty($product['tags'])) {
+                $tags = explode(',', $product['tags']);
+                $allTags = array_merge($allTags, $tags);
+            }
+        }
+        
+        return array_unique($allTags);
     }
 
     /**
