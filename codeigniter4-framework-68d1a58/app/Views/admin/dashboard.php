@@ -8,10 +8,16 @@
         <div style="font-size: 32px; font-weight: bold; color: #c41e3a;"><?= $statistics['total_orders'] ?></div>
     </div>
     
+    <?php 
+    $userRoles = session()->get('user_roles') ?? [];
+    $canViewRevenue = in_array('admin', $userRoles) || in_array('commercial', $userRoles);
+    if ($canViewRevenue): 
+    ?>
     <div class="stat-card" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
         <h3 style="color: #666; font-size: 14px; margin-bottom: 10px;">CHIFFRE D'AFFAIRES</h3>
         <div style="font-size: 32px; font-weight: bold; color: #8bc34a;"><?= number_format($statistics['total_revenue'], 2) ?> €</div>
     </div>
+    <?php endif; ?>
     
     <?php foreach ($statistics['by_status'] as $stat): ?>
         <div class="stat-card" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">

@@ -239,7 +239,7 @@ class AdminController extends Controller
      */
     public function updateOrderStatus($id)
     {
-        if ($redirect = $this->requirePermission('manage_orders')) {
+        if ($redirect = $this->requirePermission('update_order_status')) {
             return $redirect;
         }
 

@@ -57,7 +57,9 @@ class RoleInterne
                 'access_admin',
                 'manage_users',
                 'manage_products',
+                'view_orders',
                 'manage_orders',
+                'update_order_status',
                 'view_statistics',
                 'manage_settings',
                 'manage_stock'
@@ -66,6 +68,7 @@ class RoleInterne
                 'access_admin',
                 'view_orders',
                 'manage_orders',
+                'update_order_status',
                 'view_statistics',
                 'manage_products'
             ],
@@ -79,6 +82,7 @@ class RoleInterne
                 'access_admin',
                 'view_orders',
                 'manage_orders',
+                'update_order_status',
                 'manage_stock',
                 'view_products'
             ],
