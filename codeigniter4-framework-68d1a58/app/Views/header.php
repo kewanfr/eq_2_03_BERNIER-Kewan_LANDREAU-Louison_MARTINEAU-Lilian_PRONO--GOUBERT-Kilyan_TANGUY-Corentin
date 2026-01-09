@@ -1,4 +1,4 @@
-<head>
+    <head>
     <link rel="stylesheet" href="/assets/style/header.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -76,7 +76,7 @@
         <div class="header links">
             <div class="small-search-container">
                 <i class="material-symbols-outlined small-search" style="font-size: 50px;">search</i>
-            </div>
+            </div>  
             <?php if (auth()->loggedIn()): ?>
                 <?php 
                 $userRoleModel = new \App\Models\UserRoleModel();
@@ -119,13 +119,13 @@
     </div>
     <div class="header-menu">
         <div class="menu menu-container">
-            <a href="#about" class="menu about">A propos de nous</a>
+            <a href="/" class="menu about">A propos de nous</a>
         </div>
         <div class="menu menu-container">
-            <a href="#products" class="menu products">Nos produits</a>
+            <a href="/products" class="menu products">Nos produits</a>
         </div>
         <div class="menu menu-container">
-            <a href="#footer" class="menu contact">Nous contacter</a>
+            <a href="/contact" class="menu contact">Nous contacter</a>
         </div>
         <?php if (auth()->loggedIn()): ?>
             <div class="menu menu-container">

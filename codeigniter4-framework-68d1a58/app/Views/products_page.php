@@ -1,10 +1,9 @@
-<?php ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cidrerie</title>
+    <title>Nos Produits - Cidrerie</title>
     <style>
         html, body {
             margin: 0;
@@ -16,6 +15,21 @@
             font-family: 'Georgia', serif;
             background: linear-gradient(to bottom, #f5f5dc 0%, #d2b48c 100%);
             background-attachment: fixed;
+        }
+        
+        .page-title {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        
+        .page-title h1 {
+            color: #c41e3a;
+            font-size: 2.5em;
+            margin: 0;
         }
         
         .search-filters {
@@ -204,68 +218,47 @@
 </head>
 <body>
     <?= view('header') ?>
-    <?= view('cookies') ?>
     
-    <!-- Section À propos -->
-    <div style="background: rgba(255,255,255,0.95); padding: 40px; margin: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative;">
-        <!-- Drapeau breton -->
-        <img src="/assets/img/gwenn-ha-du.svg" alt="Gwenn ha du" style="position: absolute; top: 20px; right: 20px; width: 70px; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+    <div class="page-title">
+        <h1>📦 Notre Catalogue de Produits</h1>
+    </div>
+    
+    <div class="search-filters">
+        <form class="search-bar" method="GET" action="/products">
+            <input type="text" name="search" placeholder="Rechercher un produit..." value="<?= esc($currentSearch ?? '') ?>">
+            <button type="submit">Rechercher</button>
+        </form>
         
-        <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 20px; text-align: center;">
-            🍎 PommeHub - Cidrerie artisanale 
-        </h2>
-        <div style="max-width: 900px; margin: 0 auto; line-height: 1.8; color: #333;">
-            <p style="font-size: 1.1em; margin-bottom: 15px;">
-                Bienvenue chez <strong>PommeHub</strong>, votre cidrerie artisanale de tradition bretonne. 
-                Filiale de <strong>Technochantier & CIE</strong>, nous cultivons nos vergers avec passion depuis plus de 30 ans 
-                et produisons des cidres, jus de pomme et vinaigres d'exception.
-            </p>
-            <p style="font-size: 1.1em; margin-bottom: 15px;">
-                Nos produits sont élaborés à partir de pommes 100% locales, récoltées à la main et 
-                transformées selon des méthodes traditionnelles. Nous privilégions les variétés anciennes 
-                et le respect des saisons pour vous offrir des saveurs authentiques.
-            </p>
-            <p style="font-size: 0.95em; margin-bottom: 15px; color: #666; font-style: italic;">
-                <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : 
-                <a href="https://technochantier.kewan.fr/" target="_blank" style="color: #c41e3a; text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), 
-                <strong>GlobalBeats</strong> (plateforme musicale) et 
-                <strong>Framework</strong> (ordinateurs modulaires et facilement réparables).
-            </p>
-            <p style="font-size: 1.1em; color: #8bc34a; font-weight: bold; text-align: center; margin-top: 20px;">
-                🌱 Agriculture responsable • 🍏 Savoir-faire artisanal • 🏆 Qualité premium
-            </p>
+        <div class="filters">
+            <div class="filter-group">
+                <label>Catégories:</label>
+                <a href="/products" class="filter-btn <?= empty($currentCategory) ? 'active' : '' ?>">Toutes</a>
+                <?php if (!empty($categories)): ?>
+                    <?php foreach ($categories as $cat): ?>
+                        <a href="/products?category=<?= urlencode($cat['category']) ?>" class="filter-btn <?= ($currentCategory ?? '') === $cat['category'] ? 'active' : '' ?>">
+                            <?= ucfirst(esc($cat['category'])) ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            
+            <div class="filter-group">
+                <label>Tags:</label>
+                <?php if (!empty($tags)): ?>
+                    <?php foreach ($tags as $t): ?>
+                        <a href="/products?tag=<?= urlencode($t) ?>" class="filter-btn <?= ($currentTag ?? '') === $t ? 'active' : '' ?>">
+                            <?= esc($t) ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     
-    <!-- Produits phares -->
-    <div style="background: rgba(255,255,255,0.95); padding: 40px 20px; margin: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
-        <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 30px; text-align: center;">⭐ Nos Produits Phares</h2>
-        <div class="products-container" style="margin-bottom: 30px;">
-            <?php 
-            $featuredProducts = array_slice($products, 0, 3); 
-            foreach ($featuredProducts as $product): 
-            ?>
-                <?= view("products", $product); ?>
-            <?php endforeach; ?>
-        </div>
-        <div style="text-align: center;">
-            <a href="/products" style="display: inline-block; padding: 15px 40px; background: #c41e3a; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 1.1em; transition: all 0.3s;" onmouseover="this.style.background='#a01828'" onmouseout="this.style.background='#c41e3a'">
-                Voir tous nos produits →
-            </a>
-        </div>
-    </div>
-    
-    <!-- Tous les produits sur la page d'accueil -->
-    <div id="all-products" style="margin-top: 40px;">
-        <h2 style="color: #8b4513; font-size: 1.8em; margin: 20px; text-align: center; background: rgba(255,255,255,0.8); padding: 20px; border-radius: 10px;">
-            📦 Tous nos produits
-        </h2>
-        
-        <div class="products-container">
-            <?php foreach ($products as $product): ?>
-                <?= view("products", $product); ?>
-            <?php endforeach; ?>
-        </div>
+    <div class="products-container">
+        <?php foreach ($products as $product): ?>
+            <?= view("products", $product); ?>
+        <?php endforeach; ?>
     </div>
 </body>
 </html>

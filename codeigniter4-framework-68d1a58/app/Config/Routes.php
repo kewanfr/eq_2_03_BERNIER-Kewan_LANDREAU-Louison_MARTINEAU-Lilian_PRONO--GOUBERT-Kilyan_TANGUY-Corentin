@@ -22,6 +22,7 @@ $routes->get('/cookies/accept', 'Cookies::accept');
 $routes->get('/cookies/decline', 'Cookies::decline');
 
 // === Produits ===
+$routes->get('/products', 'Products::index'); // Page catalogue publique
 $routes->get('/product/add', 'ProductController::add');
 $routes->get('/product/purchase', 'ProductController::purchase');
 $routes->post('/product/add/add', 'ProductController::addAction');
