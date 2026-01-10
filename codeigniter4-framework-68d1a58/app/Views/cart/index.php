@@ -6,7 +6,7 @@
     <title>Mon Panier</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; padding-left: 0px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1 { color: #333; margin-bottom: 20px; }
         .cart-empty { text-align: center; padding: 40px; color: #666; }

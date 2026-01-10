@@ -11,6 +11,7 @@
             background: linear-gradient(to bottom, #f5f5dc 0%, #d2b48c 100%);
             background-attachment: fixed;
             padding: 20px;
+            padding-left: 0px;
         }
         
         .container {
