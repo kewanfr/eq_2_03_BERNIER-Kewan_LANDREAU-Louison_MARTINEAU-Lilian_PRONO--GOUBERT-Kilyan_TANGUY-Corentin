@@ -154,6 +154,51 @@ class AdminController extends Controller
             'quantity' => $this->request->getPost('quantity')
         ];
 
+        // Gestion de l'upload d'image
+        $image = $this->request->getFile('image');
+        if ($image && $image->isValid() && !$image->hasMoved()) {
+            // Validation du fichier
+            $validationRule = [
+                'image' => [
+                    'uploaded[image]',
+                    'mime_in[image,image/jpg,image/jpeg,image/png,image/gif]',
+                    'max_size[image,2048]', // 2MB max
+                ],
+            ];
+
+            if ($this->validate($validationRule)) {
+                // Génère un nom unique pour l'image
+                $newName = $image->getRandomName();
+                
+                // Déplace l'image vers le dossier uploads/products
+                $uploadPath = FCPATH . 'uploads/products/';
+                
+                // Crée le dossier s'il n'existe pas
+                if (!is_dir($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                
+                if ($image->move($uploadPath, $newName)) {
+                    // Supprime l'ancienne image si elle existe et n'est pas l'image par défaut
+                    $oldProduct = $this->productModel->getProductById($id);
+                    if (!empty($oldProduct['img_src']) && 
+                        strpos($oldProduct['img_src'], '/uploads/products/') !== false) {
+                        $oldImagePath = FCPATH . ltrim($oldProduct['img_src'], '/');
+                        if (file_exists($oldImagePath)) {
+                            @unlink($oldImagePath);
+                        }
+                    }
+                    
+                    // Ajoute le chemin de la nouvelle image aux données
+                    $data['img_src'] = '/uploads/products/' . $newName;
+                }
+            } else {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Erreur lors de l\'upload de l\'image : ' . implode(', ', $this->validator->getErrors()));
+            }
+        }
+
         if ($this->productModel->update($id, $data)) {
             return redirect()->to('/admin/products')->with('success', 'Produit mis à jour');
         }
