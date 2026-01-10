@@ -212,11 +212,12 @@
         <img src="/assets/img/gwenn-ha-du.svg" alt="Gwenn ha du" style="position: absolute; top: 20px; right: 20px; width: 70px; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         
         <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 20px; text-align: center;">
-            🍎 PommeHub - Cidrerie artisanale 
+            🍎 PommeHub - Plateforme de cidreries artisanales
         </h2>
         <div style="max-width: 900px; margin: 0 auto; line-height: 1.8; color: #333;">
             <p style="font-size: 1.1em; margin-bottom: 15px;">
-                Bienvenue chez <strong>PommeHub</strong>, votre cidrerie artisanale de tradition bretonne. 
+                Bienvenue chez <strong>PommeHub</strong>, votre cidrerie artisanale de tradition bretonne.
+                Nous sommes fiers de perpétuer un savoir-faire ancestral transmis de génération en génération à travers cette cidrerie familiale, ainsi que la plateforme PommeHub, regroupant plusieurs produits de cidreries artisanales de la région. 
                 Filiale de <strong>Technochantier & CIE</strong>, nous cultivons nos vergers avec passion depuis plus de 30 ans 
                 et produisons des cidres, jus de pomme et vinaigres d'exception.
             </p>
