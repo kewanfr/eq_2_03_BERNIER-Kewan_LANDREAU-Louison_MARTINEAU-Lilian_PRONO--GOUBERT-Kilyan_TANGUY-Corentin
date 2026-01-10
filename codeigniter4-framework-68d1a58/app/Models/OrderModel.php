@@ -155,8 +155,11 @@ class OrderModel extends Model
         $order = $this->find($orderId);
         
         if (!$order || $order['status'] === self::STATUS_LIVREE) {
+            log_message('error', 'Cannot cancel order #' . $orderId . ' - Order not found or already delivered');
             return false;
         }
+
+        log_message('info', 'Cancelling order #' . $orderId . ' - Current status: ' . $order['status']);
 
         // Restaure le stock
         $db = \Config\Database::connect();
@@ -170,9 +173,18 @@ class OrderModel extends Model
             $product = $productModel->getProductById($item['product_id']);
             $newQuantity = $product['quantity'] + $item['quantity'];
             $productModel->update($item['product_id'], ['quantity' => $newQuantity]);
+            log_message('info', 'Restored stock for product #' . $item['product_id'] . ': ' . $product['quantity'] . ' -> ' . $newQuantity);
         }
 
-        return $this->changeStatus($orderId, self::STATUS_ANNULEE);
+        // Changement de statut
+        $result = $this->update($orderId, ['status' => self::STATUS_ANNULEE]);
+        log_message('info', 'Status update result for order #' . $orderId . ': ' . ($result ? 'SUCCESS' : 'FAILED'));
+        
+        // Vérification
+        $updatedOrder = $this->find($orderId);
+        log_message('info', 'Order #' . $orderId . ' new status: ' . $updatedOrder['status']);
+        
+        return $updatedOrder['status'] === self::STATUS_ANNULEE;
     }
 
     // Stats pour dashboard

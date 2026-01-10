@@ -288,6 +288,23 @@ class AdminController extends Controller
             return $redirect;
         }
 
+        // Vérifier si c'est une demande d'annulation
+        $action = $this->request->getPost('action');
+        if ($action === 'cancel') {
+            log_message('info', 'Action CANCEL détectée pour commande #' . $id);
+            
+            // Vérifier permission manage_orders pour annulation
+            if (!$this->checkPermission('manage_orders')) {
+                return redirect()->back()->with('error', 'Accès non autorisé');
+            }
+            
+            if ($this->orderModel->cancelOrder($id)) {
+                return redirect()->to('/admin/orders/' . $id)->with('success', 'Commande annulée avec succès');
+            }
+            return redirect()->back()->with('error', 'Impossible d\'annuler cette commande');
+        }
+
+        // Sinon, mise à jour normale du statut
         $newStatus = $this->request->getPost('status');
 
         if ($this->orderModel->changeStatus($id, $newStatus)) {
@@ -302,20 +319,29 @@ class AdminController extends Controller
      */
     public function cancelOrder($id)
     {
+        log_message('info', '=== DEBUT cancelOrder() - ID: ' . $id . ' - Method: ' . $this->request->getMethod() . ' ===');
+        
         if ($redirect = $this->requirePermission('manage_orders')) {
+            log_message('warning', 'Permission denied for user ' . auth()->id());
             return $redirect;
         }
 
-        // Accepte GET et POST
-        if ($this->request->getMethod() === 'post' || $this->request->getGet('confirm') === '1') {
+        // Vérifier uniquement POST
+        if ($this->request->getMethod() === 'post') {
+            log_message('info', 'Tentative d\'annulation de la commande #' . $id);
+            
             if ($this->orderModel->cancelOrder($id)) {
-                return redirect()->to('/admin/orders')->with('success', 'Commande annulée');
+                log_message('info', 'Commande #' . $id . ' annulée avec succès');
+                return redirect()->to(base_url('admin/orders'))->with('success', 'Commande annulée avec succès');
             }
+            
+            log_message('error', 'Échec de l\'annulation de la commande #' . $id);
             return redirect()->back()->with('error', 'Impossible d\'annuler cette commande');
         }
         
-        // Si GET sans confirmation, redirige vers détails
-        return redirect()->to('/admin/orders/' . $id);
+        log_message('info', 'Request was not POST, redirecting to details');
+        // Si pas POST, redirige vers détails
+        return redirect()->to(base_url('admin/orders/' . $id));
     }
 
     // ========== GESTION DES UTILISATEURS ==========

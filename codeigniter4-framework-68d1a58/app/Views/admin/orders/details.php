@@ -175,17 +175,11 @@
                 Aucune action disponible pour votre rôle sur cette commande.
             </p>
         <?php endif; ?>
+        
+        <?php if ($isAdmin || $isCommercial): ?>
+            <button type="submit" name="action" value="cancel" style="background: #dc3545; color: white; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: normal; font-size: 13px; transition: all 0.3s; margin-left: 10px;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'" onclick="return confirm('⚠️ Voulez-vous vraiment annuler cette commande ?\n\nLe stock des produits sera restauré automatiquement.');">✗ Annuler la commande</button>
+        <?php endif; ?>
     </form>
-    
-    <?php if ($isAdmin || $isCommercial): ?>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-            <form method="post" action="/admin/orders/<?= $order['id'] ?>/cancel" 
-                  onsubmit="return confirm('⚠️ Voulez-vous vraiment annuler cette commande ?\n\nLe stock des produits sera restauré automatiquement.');">
-                <input type="hidden" name="cancel" value="1">
-                <button type="submit" style="background: #dc3545; color: white; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: normal; font-size: 13px; transition: all 0.3s;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'">✗ Annuler la commande</button>
-            </form>
-        </div>
-    <?php endif; ?>
 </div>
 <?php else: ?>
 <div class="content-card">
