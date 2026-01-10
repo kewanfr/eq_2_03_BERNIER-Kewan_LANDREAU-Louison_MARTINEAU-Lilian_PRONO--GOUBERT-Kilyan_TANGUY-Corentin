@@ -71,12 +71,16 @@ class CartController extends Controller
         }
 
         // Vérifie le stock
-        if ($product['quantity'] < $quantity) {
+        // Calcul de la quantité cumulée déjà présente dans le panier
+        $userId = auth()->id();
+        $cartId = $this->cartModel->getOrCreateCart($userId);
+        $existingItem = $this->cartModel->getItem($cartId, (int)$productId);
+        $currentQty = $existingItem ? (int)$existingItem['quantity'] : 0;
+
+        if ((int)$product['quantity'] < ($currentQty + (int)$quantity)) {
             return $this->response->setJSON(['success' => false, 'message' => 'Stock insuffisant']);
         }
 
-        $userId = auth()->id();
-        $cartId = $this->cartModel->getOrCreateCart($userId);
 
         if ($this->cartModel->addItem($cartId, $productId, $quantity)) {
             return $this->response->setJSON(['success' => true, 'message' => 'Produit ajouté']);
