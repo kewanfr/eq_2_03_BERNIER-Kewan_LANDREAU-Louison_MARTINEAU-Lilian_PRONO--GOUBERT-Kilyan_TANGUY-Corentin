@@ -229,8 +229,8 @@
             <p style="font-size: 0.95em; margin-bottom: 15px; color: #666; font-style: italic;">
                 <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : <br />
                 <a href="https://technochantier.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), <a href="https://dassault.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Dassault Aviation</a>, 
-                <strong>GlobalBeats</strong> (plateforme musicale), 
-                <strong>Framework</strong> (ordinateurs modulaires et facilement réparables) et <strong>reparEco</strong> (formation de réparations d'équipements électroniques).
+                <strong>GlobalBeats</strong> (plateforme musicale), <a href="https://drive.google.com/file/d/13PCXfaCm7-R-S_K38ZEEr_gcUSvgUumz/view?usp=sharing" target="_blank" style="text-decoration: none; font-weight: bold;">Marc&Co (Leader du dosage anisé avec le Ricassou 3000)</a>,
+                <a href="https://www.canva.com/design/DAGpexFnL78/URfhrRUflnu_joc9DE2KyQ/edit" target="_blank" style="text-decoration: none; font-weight: bold;">Brickophone</a> (smartphone modulaires et facilement réparables) et <strong>RéparEco</strong> (formation de réparations d'équipements électroniques).
             </p>
             <p style="font-size: 1.1em; color: #8bc34a; font-weight: bold; text-align: center; margin-top: 20px;">
                 🌱 Agriculture responsable • 🍏 Savoir-faire artisanal • 🏆 Qualité premium
