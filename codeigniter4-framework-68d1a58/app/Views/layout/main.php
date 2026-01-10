@@ -221,16 +221,16 @@
                 Filiale de <strong>Technochantier & CIE</strong>, nous cultivons nos vergers avec passion depuis plus de 30 ans 
                 et produisons des cidres, jus de pomme et vinaigres d'exception.
             </p>
-            <p style="font-size: 1.1em; margin-bottom: 15px;">
+            <p style="font-size: 1.1em; margin-bottom: 25px;">
                 Nos produits sont élaborés à partir de pommes 100% locales, récoltées à la main et 
                 transformées selon des méthodes traditionnelles. Nous privilégions les variétés anciennes 
                 et le respect des saisons pour vous offrir des saveurs authentiques.
-            </p>
+            </p> 
             <p style="font-size: 0.95em; margin-bottom: 15px; color: #666; font-style: italic;">
-                <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : 
-                <a href="https://technochantier.kewan.fr/" target="_blank" style="color: #c41e3a; text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), 
-                <strong>GlobalBeats</strong> (plateforme musicale) et 
-                <strong>Framework</strong> (ordinateurs modulaires et facilement réparables).
+                <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : <br />
+                <a href="https://technochantier.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), <a href="https://dassault.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Dassault Aviation</a>, 
+                <strong>GlobalBeats</strong> (plateforme musicale), 
+                <strong>Framework</strong> (ordinateurs modulaires et facilement réparables) et <strong>reparEco</strong> (formation de réparations d'équipements électroniques).
             </p>
             <p style="font-size: 1.1em; color: #8bc34a; font-weight: bold; text-align: center; margin-top: 20px;">
                 🌱 Agriculture responsable • 🍏 Savoir-faire artisanal • 🏆 Qualité premium
