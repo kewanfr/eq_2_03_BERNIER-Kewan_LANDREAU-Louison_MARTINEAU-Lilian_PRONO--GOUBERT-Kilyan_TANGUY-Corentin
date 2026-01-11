@@ -26,7 +26,7 @@ class ProductController extends Controller
 
         if (!$this->validate($validationRule)) {
             $data = ['errors' => $this->validator->getErrors()];
-            return view('upload_form', $data);
+            return view('product_form', $data);
         }
 
         $img = $this->request->getFile('userfile');
@@ -49,7 +49,7 @@ class ProductController extends Controller
         }
 
         $data = ['errors' => 'The file has already been moved.'];
-        return view('upload_form', $data);
+        return view('product_form', $data);
     }
 
     public function purchase() {
