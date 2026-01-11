@@ -27,6 +27,7 @@ $routes->post('/contact/send', 'Contact::send');
 
 // === Produits ===
 $routes->get('/products', 'Products::index'); // Page catalogue publique
+$routes->get('/products/load-more', 'Products::loadMore'); // API pour scroll infini
 $routes->get('/product/(:num)', 'Products::detail/$1'); // Page de détail d'un produit
 $routes->get('/product/add', 'ProductController::add');
 $routes->get('/product/purchase', 'ProductController::purchase');
@@ -45,6 +46,13 @@ $routes->get('/orders', 'OrderController::index');
 $routes->get('/orders/(:num)', 'OrderController::details/$1');
 $routes->get('/checkout', 'OrderController::checkout');
 $routes->post('/order/place', 'OrderController::place');
+// Annulation de commande par l'utilisateur
+$routes->post('/orders/(:num)/cancel', 'OrderController::cancel/$1');
+
+// === Profil ===
+$routes->get('/profile', 'ProfileController::index');
+$routes->post('/profile/update', 'ProfileController::update');
+$routes->post('/profile/password', 'ProfileController::changePassword');
 
 // === Back Office (Admin) ===
 $routes->group('admin', ['filter' => 'role:admin,commercial,preparation,production,saisonnier'], function($routes) {
@@ -57,6 +65,7 @@ $routes->group('admin', ['filter' => 'role:admin,commercial,preparation,producti
     $routes->get('products/edit/(:num)', 'AdminController::editProduct/$1');
     $routes->post('products/update/(:num)', 'AdminController::updateProduct/$1');
     $routes->get('products/delete/(:num)', 'AdminController::deleteProduct/$1');
+    $routes->post('products/(:num)/toggle', 'AdminController::toggleProduct/$1');
     
     // Gestion des commandes
     $routes->get('orders', 'AdminController::orders');
@@ -67,12 +76,16 @@ $routes->group('admin', ['filter' => 'role:admin,commercial,preparation,producti
     
     // Gestion des utilisateurs (admin uniquement)
     $routes->get('users', 'AdminController::users', ['filter' => 'role:admin']);
+    $routes->get('users/create', 'AdminController::createUser', ['filter' => 'role:admin']);
+    $routes->post('users/create', 'AdminController::storeUser', ['filter' => 'role:admin']);
     $routes->get('users/(:num)/roles', 'AdminController::editUserRoles/$1', ['filter' => 'role:admin']);
     $routes->post('users/(:num)/roles', 'AdminController::updateUserRoles/$1', ['filter' => 'role:admin']);
+    $routes->post('users/(:num)/delete', 'AdminController::deleteUser/$1', ['filter' => 'role:admin']);
     
     // Gestion des stocks
     $routes->get('stock', 'AdminController::stock');
     $routes->post('stock/(:num)/adjust', 'AdminController::adjustStock/$1');
+    $routes->get('stock/history', 'AdminController::stockHistory');
 });
 
 service('auth')->routes($routes);

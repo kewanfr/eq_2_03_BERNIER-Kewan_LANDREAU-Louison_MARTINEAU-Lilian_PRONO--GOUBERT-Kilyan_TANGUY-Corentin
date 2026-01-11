@@ -82,11 +82,25 @@
                 $userRoleModel = new \App\Models\UserRoleModel();
                 $userRoles = $userRoleModel->getUserRoles(auth()->id());
                 $username = auth()->user()->username ?? 'Utilisateur';
+                
+                // Récupère le type de client
+                $db = \Config\Database::connect();
+                $userInfo = $db->table('users')->where('id', auth()->id())->get()->getRow();
+                $customerType = $userInfo->customer_type ?? 'particulier';
+                $companyName = $userInfo->company_name ?? null;
                 ?>
                 <div class="login-link" style="cursor: default;">
                     <i class="material-symbols-outlined loginicon" style="font-size: 50px;">account_circle</i>
                     <span class="login text user-info-header">
-                        <span class="username"><?= esc($username) ?></span>
+                        <span class="username">
+                            <?= esc($username) ?>
+                            <?php if ($customerType === 'professionnel'): ?>
+                                <span style="font-size: 0.8em; color: #ffd700;">⭐ PRO</span>
+                            <?php endif; ?>
+                        </span>
+                        <?php if ($customerType === 'professionnel' && $companyName): ?>
+                            <span style="font-size: 0.85em; opacity: 0.9;"><?= esc($companyName) ?></span>
+                        <?php endif; ?>
                         <span class="roles">
                             <?php foreach ($userRoles as $role): ?>
                                 <span class="role-badge-header"><?= esc(ucfirst($role)) ?></span>
@@ -132,8 +146,17 @@
                 <a href="/orders" class="menu orders">Mes commandes</a>
             </div>
             <div class="menu menu-container">
+                <a href="/profile" class="menu profile">Mon profil</a>
+            </div>
+            <?php 
+            // Affiche le menu admin seulement pour les utilisateurs avec des rôles internes (pas client)
+            $internalRoles = array_diff($userRoles, ['client']);
+            if (!empty($internalRoles)): 
+            ?>
+            <div class="menu menu-container">
                 <a href="/admin" class="menu admin">Admin</a>
             </div>
+            <?php endif; ?>
         <?php endif; ?>
         <div class="bottom-separator"></div>
     </div>

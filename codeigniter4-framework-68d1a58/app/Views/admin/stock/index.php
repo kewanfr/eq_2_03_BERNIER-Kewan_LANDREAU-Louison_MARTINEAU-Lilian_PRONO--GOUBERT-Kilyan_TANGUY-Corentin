@@ -32,6 +32,7 @@
                                 <td>
                                     <form method="post" action="/admin/stock/<?= $product['id'] ?>/adjust" class="stock-actions">
                                         <input type="number" name="adjustment" placeholder="±" required>
+                                        <input type="text" name="note" placeholder="Motif (optionnel)">
                                         <button type="submit" class="btn btn-success">Ajuster</button>
                                     </form>
                                 </td>
@@ -40,5 +41,9 @@
                     </tbody>
             </table>
         </div>
+
+<div style="margin-top: 20px;">
+    <a class="btn" href="/admin/stock/history" style="background:#007bff; color:white; padding:8px 14px; border-radius:6px; text-decoration:none;">Voir l'historique des mouvements</a>
+</div>
 
 <?= view('admin/footer') ?>

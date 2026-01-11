@@ -12,7 +12,7 @@ class Register extends RegisterController {
     {
         $response = parent::registerAction();
         
-        // Si l'inscription réussit, ajoute le rôle client
+        // Si l'inscription réussit, ajoute le rôle client et les infos supplémentaires
         if (auth()->loggedIn()) {
             $userId = auth()->id();
             $db = \Config\Database::connect();
@@ -26,6 +26,33 @@ class Register extends RegisterController {
                     'role' => 'client'
                 ]);
             }
+            
+            // Récupère les données du formulaire
+            $customerType = $this->request->getPost('customer_type') ?? 'particulier';
+            $companyName = $this->request->getPost('company_name');
+            $siret = $this->request->getPost('siret');
+            $tvaNumber = $this->request->getPost('tva_number');
+            $phone = $this->request->getPost('phone');
+            $address = $this->request->getPost('address');
+            
+            // Met à jour les informations du client
+            $updateData = ['customer_type' => $customerType];
+            
+            // Ajoute les infos de contact si présentes
+            if (!empty($phone)) {
+                $updateData['phone'] = $phone;
+            }
+            if (!empty($address)) {
+                $updateData['address'] = $address;
+            }
+            
+            if ($customerType === 'professionnel') {
+                $updateData['company_name'] = $companyName;
+                $updateData['siret'] = $siret;
+                $updateData['tva_number'] = $tvaNumber;
+            }
+            
+            $db->table('users')->where('id', $userId)->update($updateData);
         }
         
         return $response;

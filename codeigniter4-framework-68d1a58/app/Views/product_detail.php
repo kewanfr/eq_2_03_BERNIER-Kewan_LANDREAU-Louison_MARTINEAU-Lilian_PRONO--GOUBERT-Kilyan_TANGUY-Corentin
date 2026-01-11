@@ -58,8 +58,9 @@
         
         .product-detail-image {
             width: 100%;
-            max-height: 500px;
-            object-fit: cover;
+            height: 500px;
+            object-fit: contain;
+            background: #fff;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
@@ -247,6 +248,10 @@
             .price-value {
                 font-size: 2em;
             }
+            
+            .product-detail-image {
+                height: 300px;
+            }
         }
     </style>
 </head>
@@ -285,9 +290,21 @@
                     <?= esc($product['desc']) ?>
                 </div>
                 
+                <?php
+                $tvaRate = $product['tva_rate'] ?? 20.0;
+                $priceTTC = $product['price'];
+                $priceHT = $priceTTC / (1 + $tvaRate / 100);
+                ?>
+                
                 <div class="price-section">
-                    <span class="price-label">Prix:</span>
-                    <span class="price-value"><?= number_format($product['price'], 2, ',', ' ') ?> €</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #8b4513; margin-bottom: 5px;">Prix HT: <?= number_format($priceHT, 2, ',', ' ') ?> €</div>
+                        <div style="display: flex; align-items: baseline; gap: 10px;">
+                            <span class="price-label">Prix TTC:</span>
+                            <span class="price-value"><?= number_format($priceTTC, 2, ',', ' ') ?> €</span>
+                        </div>
+                        <div style="font-size: 12px; color: #888; margin-top: 5px;">TVA <?= number_format($tvaRate, 1) ?>%</div>
+                    </div>
                 </div>
                 
                 <?php

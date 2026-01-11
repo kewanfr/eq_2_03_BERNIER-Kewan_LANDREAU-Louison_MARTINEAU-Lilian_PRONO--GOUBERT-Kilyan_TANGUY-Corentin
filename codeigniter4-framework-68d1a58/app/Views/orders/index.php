@@ -39,6 +39,11 @@
                         <strong>Total:</strong> <?= number_format($order['total_ttc'], 2) ?> €
                     </div>
                     <a href="/orders/<?= $order['id'] ?>" class="btn" style="margin-top: 10px; display: inline-block;">Voir détails</a>
+                    <?php if ($order['status'] === 'PAYEE'): ?>
+                        <form action="/orders/<?= $order['id'] ?>/cancel" method="post" style="display: inline; margin-left: 10px;">
+                            <button type="submit" class="btn" style="background: #dc3545;">Annuler</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

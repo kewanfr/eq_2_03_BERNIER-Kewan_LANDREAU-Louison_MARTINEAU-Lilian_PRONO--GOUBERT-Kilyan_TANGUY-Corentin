@@ -70,6 +70,16 @@
     <div class="user-info">
         <p><strong>ID:</strong> <?= esc($user->id) ?></p>
         <p><strong>Nom d'utilisateur:</strong> <?= esc($user->username) ?></p>
+        <p><strong>Type de compte:</strong> 
+            <?php if ($user->customer_type === 'professionnel'): ?>
+                <span style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #8b6914; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold;">⭐ PRO</span>
+                <?php if (!empty($user->company_name)): ?>
+                    - <?= esc($user->company_name) ?>
+                <?php endif; ?>
+            <?php else: ?>
+                <span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold;">👤 Particulier</span>
+            <?php endif; ?>
+        </p>
         <p><strong>Rôles actuels:</strong> 
             <?php if (empty($userRoles)): ?>
                 <span class="role-badge badge-client">Aucun rôle</span>
@@ -82,6 +92,16 @@
     </div>
     
     <form action="/admin/users/<?= esc($user->id) ?>/roles" method="post">
+        <div class="form-group" style="margin-bottom: 25px;">
+            <label for="phone">Numéro de téléphone:</label>
+            <input type="tel" id="phone" name="phone" class="textfield" value="<?= esc($user->phone ?? '') ?>" placeholder="Ex: 06 12 34 56 78" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 25px;">
+            <label for="address">Adresse:</label>
+            <textarea id="address" name="address" class="textfield" rows="3" placeholder="Adresse complète" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;"><?= esc($user->address ?? '') ?></textarea>
+        </div>
+        
         <div class="form-group">
             <label>Sélectionner les rôles:</label>
             <div class="checkbox-group">

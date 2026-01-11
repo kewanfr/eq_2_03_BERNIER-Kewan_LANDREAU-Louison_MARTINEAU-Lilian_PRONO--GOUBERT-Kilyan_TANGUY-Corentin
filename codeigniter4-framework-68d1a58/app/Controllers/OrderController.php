@@ -81,14 +81,43 @@ class OrderController extends Controller
 
         $userId = auth()->id();
         $cartId = $this->cartModel->getOrCreateCart($userId);
+        
+        // Récupère les infos de livraison
+        $deliveryMethod = $this->request->getPost('delivery_method') ?? 'pickup';
+        $deliveryCost = (float) ($this->request->getPost('delivery_cost') ?? 0);
 
-        // Crée la commande
-        $orderId = $this->orderModel->createFromCart($userId, $cartId);
+        // Crée la commande avec les infos de livraison
+        $orderId = $this->orderModel->createFromCart($userId, $cartId, $deliveryMethod, $deliveryCost);
 
         if (!$orderId) {
             return redirect()->to('/cart')->with('error', 'Erreur lors de la création de la commande');
         }
 
         return redirect()->to('/orders/' . $orderId)->with('success', 'Commande passée avec succès !');
+    }
+
+    // Annule une commande (si pas encore en préparation)
+    public function cancel($id)
+    {
+        if (!auth()->loggedIn()) {
+            return redirect()->to('/login')->with('error', 'Vous devez être connecté');
+        }
+
+        $order = $this->orderModel->find($id);
+        if (!$order || (int)$order['user_id'] !== (int)auth()->id()) {
+            return redirect()->to('/orders')->with('error', 'Commande introuvable');
+        }
+
+        // Annulation seulement si la commande n'est pas encore en préparation
+        if ($order['status'] !== OrderModel::STATUS_PAYEE) {
+            return redirect()->to('/orders/' . $id)->with('error', "La commande ne peut plus être annulée car elle est déjà en préparation ou au-delà.");
+        }
+
+        $ok = $this->orderModel->cancelOrder((int)$id);
+        if ($ok) {
+            return redirect()->to('/orders/' . $id)->with('success', 'Commande annulée avec succès.');
+        }
+
+        return redirect()->to('/orders/' . $id)->with('error', "Impossible d'annuler la commande.");
     }
 }

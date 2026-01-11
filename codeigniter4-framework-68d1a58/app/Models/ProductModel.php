@@ -12,7 +12,7 @@ class ProductModel extends Model
 {
     protected $table = 'products';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['name', 'desc', 'img_src', 'price', 'quantity', 'format', 'category', 'tags'];
+    protected $allowedFields = ['name', 'desc', 'img_src', 'price', 'tva_rate', 'quantity', 'format', 'category', 'tags', 'is_active'];
     protected $returnType = 'array';
     protected $useTimestamps = false;
 
@@ -33,6 +33,22 @@ class ProductModel extends Model
     public function getAllProducts()
     {
         return $this->findAll();
+    }
+
+    // Produits actifs (catalogue public) avec pagination optionnelle
+    public function getAllActiveProducts(?int $limit = null, int $offset = 0)
+    {
+        $builder = $this->where('is_active', 1);
+        if ($limit !== null) {
+            return $builder->findAll($limit, $offset);
+        }
+        return $builder->findAll();
+    }
+
+    // Compte le nombre de produits actifs
+    public function countActiveProducts(): int
+    {
+        return $this->where('is_active', 1)->countAllResults();
     }
 
     /**
@@ -68,8 +84,8 @@ class ProductModel extends Model
         return $this->like('desc', $keyword)->findAll();
     }
 
-    // Recherche et filtre les produits
-    public function searchAndFilter($search = null, $category = null, $tag = null)
+    // Recherche et filtre les produits avec pagination
+    public function searchAndFilter($search = null, $category = null, $tag = null, $minPrice = null, $maxPrice = null, ?int $limit = null, int $offset = 0)
     {
         $builder = $this->builder();
         
@@ -88,7 +104,54 @@ class ProductModel extends Model
             $builder->like('tags', $tag);
         }
         
+        if ($minPrice !== null && $minPrice !== '') {
+            $builder->where('price >=', (float)$minPrice);
+        }
+        
+        if ($maxPrice !== null && $maxPrice !== '') {
+            $builder->where('price <=', (float)$maxPrice);
+        }
+        
+        // Exclut les produits inactifs du catalogue
+        $builder->where('is_active', 1);
+
+        if ($limit !== null) {
+            $builder->limit($limit, $offset);
+        }
+
         return $builder->get()->getResultArray();
+    }
+
+    // Compte les résultats filtrés (pour pagination)
+    public function countFiltered($search = null, $category = null, $tag = null, $minPrice = null, $maxPrice = null): int
+    {
+        $builder = $this->builder();
+        
+        if ($search) {
+            $builder->groupStart()
+                ->like('name', $search)
+                ->orLike('desc', $search)
+                ->groupEnd();
+        }
+        
+        if ($category) {
+            $builder->where('category', $category);
+        }
+        
+        if ($tag) {
+            $builder->like('tags', $tag);
+        }
+        
+        if ($minPrice !== null && $minPrice !== '') {
+            $builder->where('price >=', (float)$minPrice);
+        }
+        
+        if ($maxPrice !== null && $maxPrice !== '') {
+            $builder->where('price <=', (float)$maxPrice);
+        }
+        
+        $builder->where('is_active', 1);
+        return $builder->countAllResults();
     }
 
     // Récupère toutes les catégories

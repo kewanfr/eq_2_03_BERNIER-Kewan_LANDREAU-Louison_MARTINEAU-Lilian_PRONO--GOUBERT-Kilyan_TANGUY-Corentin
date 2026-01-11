@@ -21,10 +21,40 @@
     <h2>Informations client</h2>
     <div class="info-group">
         <strong>Utilisateur:</strong> <?= esc($order['username']) ?>
+        <?php if ($order['customer_type'] === 'professionnel'): ?>
+            <span style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #8b6914; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;">⭐ PRO</span>
+        <?php endif; ?>
     </div>
+    <?php if ($order['customer_type'] === 'professionnel'): ?>
+        <?php if (!empty($order['company_name'])): ?>
+        <div class="info-group">
+            <strong>Entreprise:</strong> <?= esc($order['company_name']) ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($order['siret'])): ?>
+        <div class="info-group">
+            <strong>SIRET:</strong> <?= esc($order['siret']) ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($order['tva_number'])): ?>
+        <div class="info-group">
+            <strong>N° TVA:</strong> <?= esc($order['tva_number']) ?>
+        </div>
+        <?php endif; ?>
+    <?php endif; ?>
     <?php if (!empty($order['email'])): ?>
     <div class="info-group">
         <strong>Email:</strong> <?= esc($order['email']) ?>
+    </div>
+    <?php endif; ?>
+    <?php if (!empty($order['phone'])): ?>
+    <div class="info-group">
+        <strong>Téléphone:</strong> <?= esc($order['phone']) ?>
+    </div>
+    <?php endif; ?>
+    <?php if (!empty($order['address'])): ?>
+    <div class="info-group">
+        <strong>Adresse:</strong> <?= esc($order['address']) ?>
     </div>
     <?php endif; ?>
 </div>
@@ -69,6 +99,26 @@
         <span style="background: <?= $statusBg ?>; color: <?= $statusColor ?>; padding: 5px 12px; border-radius: 12px; display: inline-block; font-weight: bold; font-size: 13px;">
             <?= $order['status'] ?>
         </span>
+    </div>
+    <div class="info-group">
+        <strong>Mode de livraison:</strong>
+        <?php
+        $deliveryIcons = [
+            'pickup' => '🏪',
+            'local_delivery' => '🚗',
+            'carrier_delivery' => '📦'
+        ];
+        $deliveryNames = [
+            'pickup' => 'Retrait à la cidrerie',
+            'local_delivery' => 'Livraison locale',
+            'carrier_delivery' => 'Livraison transporteur'
+        ];
+        $deliveryMethod = $order['delivery_method'] ?? 'pickup';
+        ?>
+        <?= $deliveryIcons[$deliveryMethod] ?? '🏪' ?> <?= $deliveryNames[$deliveryMethod] ?? 'Retrait à la cidrerie' ?>
+    </div>
+    <div class="info-group">
+        <strong>Frais de livraison:</strong> <?= number_format($order['delivery_cost'] ?? 0, 2) ?> €
     </div>
     <div class="info-group">
         <strong>Total HT:</strong> <?= number_format($order['total_ht'], 2) ?> €

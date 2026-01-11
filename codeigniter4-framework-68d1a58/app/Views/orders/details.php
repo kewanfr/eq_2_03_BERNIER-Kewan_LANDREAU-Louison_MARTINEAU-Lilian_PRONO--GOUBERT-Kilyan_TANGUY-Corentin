@@ -165,6 +165,29 @@
                 <span class="status-badge status-<?= $order['status'] ?>"><?= $order['status'] ?></span>
             </div>
             <div class="info-row">
+                <span class="info-label">Mode de livraison:</span>
+                <span>
+                    <?php
+                    $deliveryIcons = [
+                        'pickup' => '🏪',
+                        'local_delivery' => '🚗',
+                        'carrier_delivery' => '📦'
+                    ];
+                    $deliveryNames = [
+                        'pickup' => 'Retrait à la cidrerie',
+                        'local_delivery' => 'Livraison locale',
+                        'carrier_delivery' => 'Livraison transporteur'
+                    ];
+                    $deliveryMethod = $order['delivery_method'] ?? 'pickup';
+                    ?>
+                    <?= $deliveryIcons[$deliveryMethod] ?? '🏪' ?> <?= $deliveryNames[$deliveryMethod] ?? 'Retrait à la cidrerie' ?>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Frais de livraison:</span>
+                <span><?= number_format($order['delivery_cost'] ?? 0, 2) ?> €</span>
+            </div>
+            <div class="info-row">
                 <span class="info-label">Total HT:</span>
                 <span><?= number_format($order['total_ht'], 2) ?> €</span>
             </div>
@@ -213,6 +236,11 @@
         <div style="margin-top: 30px; display: flex; gap: 15px;">
             <a href="/orders" class="btn btn-secondary">← Retour à mes commandes</a>
             <a href="/" class="btn">Continuer mes achats</a>
+            <?php if ($order['status'] === 'PAYEE'): ?>
+                <form action="/orders/<?= $order['id'] ?>/cancel" method="post" style="display: inline;">
+                    <button type="submit" class="btn" style="background: #dc3545;">Annuler la commande</button>
+                </form>
+            <?php endif; ?>
         </div>
     </div>
 </body>

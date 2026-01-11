@@ -32,8 +32,19 @@
             </div>
         <?php endif; ?>
         
+        <?php
+        $tvaRate = $tva_rate ?? 20.0;
+        $priceTTC = $price ?? 0;
+        $priceHT = $priceTTC / (1 + $tvaRate / 100);
+        ?>
+        
         <div class='price-qtt-container'>
-            <span class='product_price'><?= esc($price ?? '0') ?> €</span>
+            <div>
+                <span class='product_price'><?= number_format($priceTTC, 2) ?> € TTC</span>
+                <div style="font-size: 0.8em; color: #888;">
+                    (<?= number_format($priceHT, 2) ?> € HT)
+                </div>
+            </div>
             <span class='product_qtt'>Stock: <?= esc($quantity ?? '0') ?></span>
         </div>
         
