@@ -31,7 +31,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .age-modal-content {
             background: white;
             padding: 40px;
@@ -40,18 +40,18 @@
             max-width: 500px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
-        
+
         .age-modal h2 {
             color: #8b4513;
             margin-bottom: 20px;
         }
-        
+
         .age-modal p {
             color: #666;
             margin-bottom: 30px;
             font-size: 1.1em;
         }
-        
+
         .age-modal button {
             margin: 10px;
             padding: 15px 40px;
@@ -62,25 +62,25 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-        
+
         .age-modal .btn-yes {
             background: #c41e3a;
             color: white;
         }
-        
+
         .age-modal .btn-yes:hover {
             background: #a01829;
         }
-        
+
         .age-modal .btn-no {
             background: #8bc34a;
             color: white;
         }
-        
+
         .age-modal .btn-no:hover {
             background: #7cb342;
         }
-        
+
         .search-filters {
             background: rgba(255,255,255,0.9);
             padding: 25px;
@@ -295,19 +295,19 @@
                 Bienvenue sur la plateforme PommeHub, filiale de <strong>Technochantier & CIE</strong>, elle regroupe nos produits ainsi que ceux de nos cidreries artisanales partenaires de la région.
                 <br /><br />
                 Nous sommes <strong>TechnoPomme</strong>, votre cidrerie artisanale de tradition bretonne.
-                Nous sommes fiers de perpétuer un savoir-faire ancestral transmis de génération en génération à travers cette cidrerie familiale, nous cultivons nos vergers avec passion depuis plus de 30 ans 
-                et produisons des cidres, jus de pomme et vinaigres d'exception. 
+                Nous sommes fiers de perpétuer un savoir-faire ancestral transmis de génération en génération à travers cette cidrerie familiale, nous cultivons nos vergers avec passion depuis plus de 30 ans
+                et produisons des cidres, jus de pomme et vinaigres d'exception.
 
-                
+
             </p>
             <p style="font-size: 1.1em; margin-bottom: 25px;">
                 Nos produits sont élaborés à partir de pommes 100% locales, récoltées à la main et 
                 transformées selon des méthodes traditionnelles. Nous privilégions les variétés anciennes 
                 et le respect des saisons pour vous offrir des saveurs authentiques.
-            </p> 
+            </p>
             <p style="font-size: 0.95em; margin-bottom: 15px; color: #666; font-style: italic;">
                 <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : <br />
-                <a href="https://technochantier.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), <a href="https://dassault.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Dassault Aviation</a>, 
+                <a href="https://technochantier.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), <a href="https://dassault.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Dassault Aviation</a>,
                 <strong>GlobalBeats</strong> (plateforme musicale), <a href="https://drive.google.com/file/d/13PCXfaCm7-R-S_K38ZEEr_gcUSvgUumz/view?usp=sharing" target="_blank" style="text-decoration: none; font-weight: bold;">Marc&Co</a> (Leader du dosage anisé avec le Ricassou 3000),
                 <a href="https://www.canva.com/design/DAGpexFnL78/URfhrRUflnu_joc9DE2KyQ/edit" target="_blank" style="text-decoration: none; font-weight: bold;">Brickophone</a> (smartphone modulaires et facilement réparables) et <strong>RéparEco</strong> (formation de réparations d'équipements électroniques).
             </p>¨
@@ -373,7 +373,7 @@
         function filterAlcoolProducts() {
             // Catégories sans alcool
             const nonAlcoolCategories = ['Jus', 'Vinaigres', 'Confitures', 'Coffrets'];
-            
+
             // Masquer tous les produits avec alcool
             const allProducts = document.querySelectorAll('.product-container');
             allProducts.forEach(product => {
