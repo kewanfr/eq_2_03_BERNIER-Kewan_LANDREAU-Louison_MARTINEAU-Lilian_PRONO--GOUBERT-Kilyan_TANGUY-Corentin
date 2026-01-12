@@ -1,3 +1,4 @@
+<?php use App\Enums\OrderStatus; ?>
 <?= $this->include('admin/header') ?>
 
 <div class="header">
@@ -166,54 +167,41 @@
             <select name="status" required>
                 <?php
                 // Statuts disponibles selon le rôle
-                $currentStatus = $order['status'];
+                $currentStatus = OrderStatus::fromString($order['status']);
                 $userRoles = session()->get('user_roles') ?? [];
                 $isAdmin = in_array('admin', $userRoles);
                 $isCommercial = in_array('commercial', $userRoles);
                 $isPreparation = in_array('preparation', $userRoles);
                 $isProduction = in_array('production', $userRoles);
                 
-                // ADMIN peut tout faire
-                if ($isAdmin) {
-                    $statuses = ['PAYEE', 'EN_PREPARATION', 'PRETE', 'EXPEDIEE', 'LIVREE'];
-                }
-                // COMMERCIAL peut valider le paiement
-                elseif ($isCommercial) {
-                    $statuses = [];
-                    if ($currentStatus === 'PAYEE') {
-                        $statuses[] = 'EN_PREPARATION';
-                    }
-                }
-                // PREPARATION peut marquer comme prête
-                elseif ($isPreparation) {
-                    $statuses = [];
-                    if ($currentStatus === 'EN_PREPARATION') {
-                        $statuses[] = 'PRETE';
-                    }
-                }
-                // PRODUCTION peut expédier et marquer comme livrée
-                elseif ($isProduction) {
-                    $statuses = [];
-                    if ($currentStatus === 'PRETE') {
-                        $statuses[] = 'EXPEDIEE';
-                    }
-                    if ($currentStatus === 'EXPEDIEE') {
-                        $statuses[] = 'LIVREE';
-                    }
-                }
-                else {
-                    $statuses = [];
+                // Utilise les transitions valides de l'enum
+                $nextStatuses = $currentStatus->nextPossibleStatuses();
+                
+                // Filtre selon le rôle (sauf admin qui peut tout)
+                if (!$isAdmin) {
+                    $nextStatuses = array_filter($nextStatuses, function($status) use ($isCommercial, $isPreparation, $isProduction) {
+                        // Commercial : peut lancer la préparation
+                        if ($isCommercial && $status === OrderStatus::EN_PREPARATION) return true;
+                        // Préparation : peut marquer prête
+                        if ($isPreparation && $status === OrderStatus::PRETE) return true;
+                        // Production : peut expédier et marquer livrée
+                        if ($isProduction && in_array($status, [OrderStatus::EXPEDIEE, OrderStatus::LIVREE])) return true;
+                        return false;
+                    });
                 }
                 
-                foreach ($statuses as $status):
-                    $selected = ($status === $currentStatus) ? 'selected' : '';
+                // Exclure ANNULEE des transitions normales (bouton séparé)
+                $nextStatuses = array_filter($nextStatuses, fn($s) => $s !== OrderStatus::ANNULEE);
+                
+                foreach ($nextStatuses as $statusEnum):
+                    $selected = ($statusEnum === $currentStatus) ? 'selected' : '';
                 ?>
-                    <option value="<?= $status ?>" <?= $selected ?>><?= $status ?></option>
+                    <option value="<?= $statusEnum->value ?>" <?= $selected ?>><?= $statusEnum->label() ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         
-        <?php if (!empty($statuses)): ?>
+        <?php if (!empty($nextStatuses)): ?>
             <button type="submit" class="btn-primary" style="background: #8bc34a; color: white; padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.3s;" onmouseover="this.style.background='#7cb342'" onmouseout="this.style.background='#8bc34a'">✓ Mettre à jour le statut</button>
         <?php else: ?>
             <p style="color: #999; font-style: italic;">
@@ -221,7 +209,7 @@
             </p>
         <?php endif; ?>
         
-        <?php if ($isAdmin || $isCommercial): ?>
+        <?php if (($isAdmin || $isCommercial) && $currentStatus->canBeCancelled()): ?>
             <button type="submit" name="action" value="cancel" style="background: #dc3545; color: white; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: normal; font-size: 13px; transition: all 0.3s; margin-left: 10px;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'" onclick="return confirm('⚠️ Voulez-vous vraiment annuler cette commande ?\n\nLe stock des produits sera restauré automatiquement.');">✗ Annuler la commande</button>
         <?php endif; ?>
     </form>

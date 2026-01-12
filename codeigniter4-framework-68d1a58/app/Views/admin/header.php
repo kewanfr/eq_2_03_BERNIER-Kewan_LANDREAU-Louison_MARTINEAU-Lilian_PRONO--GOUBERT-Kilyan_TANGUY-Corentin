@@ -235,7 +235,8 @@
                 $userRoles = session()->get('user_roles') ?? [];
                 $hasPermission = function($permission) use ($userRoles) {
                     foreach ($userRoles as $role) {
-                        if (\App\Enums\RoleInterne::hasPermission($role, $permission)) {
+                        $roleEnum = \App\Enums\RoleInterne::tryFrom($role);
+                        if ($roleEnum && $roleEnum->hasPermission($permission)) {
                             return true;
                         }
                     }

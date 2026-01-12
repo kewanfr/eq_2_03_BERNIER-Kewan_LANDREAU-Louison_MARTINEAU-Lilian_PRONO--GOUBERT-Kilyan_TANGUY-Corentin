@@ -17,9 +17,9 @@
         <label>Filtrer par statut: </label>
         <select name="status" onchange="this.form.submit()">
             <option value="">Tous</option>
-            <?php foreach ($statuses as $status): ?>
-                <option value="<?= $status ?>" <?= (isset($_GET['status']) && $_GET['status'] === $status) ? 'selected' : '' ?>>
-                    <?= str_replace('_', ' ', $status) ?>
+            <?php foreach ($statuses as $statusEnum): ?>
+                <option value="<?= $statusEnum->value ?>" <?= (isset($_GET['status']) && $_GET['status'] === $statusEnum->value) ? 'selected' : '' ?>>
+                    <?= $statusEnum->label() ?>
                 </option>
             <?php endforeach; ?>
         </select>
