@@ -1,7 +1,9 @@
     <head>
     <link rel="stylesheet" href="/assets/style/header.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <style>
+    <link rel="icon" href="/assets/img/logo.png">
+
+        <style>
         /* Thème cidrerie - couleurs pommes/nature */
         :root {
             --pomme-rouge: #c41e3a;
