@@ -1,12 +1,14 @@
 <?= view('admin/header') ?>
 
 <style>
-    .product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; vertical-align: middle; }
-    .actions { display: flex; gap: 5px; align-items: center; }
+    .product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; display: block; }
+    .actions { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
     .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; }
     .alert-success { background: #d4edda; color: #155724; }
     .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    td { vertical-align: middle !important; }
+    table td { vertical-align: middle !important; }
+    table td:first-child { text-align: center; }
+    .actions .btn { white-space: nowrap; }
 </style>
 
 <div class="header-actions">
@@ -27,6 +29,7 @@
                             <th>Description</th>
                             <th>Prix</th>
                             <th>Stock</th>
+                            <th>Statut</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -38,8 +41,14 @@
                                 <td><?= esc(substr($product['desc'], 0, 50)) ?>...</td>
                                 <td><?= number_format($product['price'], 2) ?> €</td>
                                 <td><?= $product['quantity'] ?></td>
+                                <td><?= !empty($product['is_active']) ? '<span style="color:#28a745;font-weight:bold;">Actif</span>' : '<span style="color:#dc3545;font-weight:bold;">Inactif</span>' ?></td>
                                 <td class="actions">
                                     <a href="/admin/products/edit/<?= $product['id'] ?>" class="btn btn-primary">Modifier</a>
+                                    <form action="/admin/products/<?= $product['id'] ?>/toggle" method="post" style="display:inline;">
+                                        <button type="submit" class="btn" style="background: <?= !empty($product['is_active']) ? '#ffc107' : '#28a745' ?>; color:white;">
+                                            <?= !empty($product['is_active']) ? 'Désactiver' : 'Activer' ?>
+                                        </button>
+                                    </form>
                                     <a href="/admin/products/delete/<?= $product['id'] ?>" class="btn btn-danger" onclick="return confirm('Supprimer ce produit ?')">Supprimer</a>
                                 </td>
                             </tr>

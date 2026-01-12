@@ -102,7 +102,8 @@
                                         $badgeClass = 'badge-info';
                                         if ($order['status'] === 'LIVREE') $badgeClass = 'badge-success';
                                         elseif ($order['status'] === 'ANNULEE') $badgeClass = 'badge-danger';
-                                        elseif ($order['status'] === 'EN_PREPARATION') $badgeClass = 'badge-warning';
+                                        elseif ($order['status'] === 'EN_PREPARATION' || $order['status'] === 'PAYEE') $badgeClass = 'badge-warning';
+                                        elseif ($order['status'] === 'PRETE' || $order['status'] === 'EXPEDIEE') $badgeClass = 'badge-info';
                                         ?>
                                         <span class="badge <?= $badgeClass ?>"><?= $order['status'] ?></span>
                                     </td>

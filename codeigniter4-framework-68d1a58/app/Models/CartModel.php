@@ -44,11 +44,26 @@ class CartModel extends Model
         ])->get()->getRowArray();
         
         if ($existing) {
-            // Met à jour la quantité
+            // Récupère le prix et le stock du produit
+            $productModel = new ProductModel();
+            $product = $productModel->getProductById($productId);
+            if (!$product) {
+                return false;
+            }
+
+            // Additionne la quantité existante avec la quantité demandée
+            $newQuantity = (int)$existing['quantity'] + (int)$quantity;
+
+            // Vérifie le stock disponible par rapport à la quantité cumulée
+            if ((int)$product['quantity'] < $newQuantity) {
+                return false;
+            }
+
+            // Met à jour la quantité cumulée
             return $builder->where([
                 'cart_id' => $cartId,
                 'product_id' => $productId
-            ])->update(['quantity' => $existing['quantity'] + $quantity]);
+            ])->update(['quantity' => $newQuantity]);
         } else {
             // Récupère le prix du produit
             $productModel = new ProductModel();
@@ -58,6 +73,11 @@ class CartModel extends Model
                 return false;
             }
             
+            // Vérifie le stock pour une première insertion
+            if ((int)$product['quantity'] < (int)$quantity) {
+                return false;
+            }
+
             // Ajoute une nouvelle ligne
             return $builder->insert([
                 'cart_id' => $cartId,
@@ -104,6 +124,18 @@ class CartModel extends Model
             ->where('cart_items.cart_id', $cartId)
             ->get()
             ->getResultArray();
+    }
+
+    // Récupère un article spécifique du panier
+    public function getItem(int $cartId, int $productId): ?array
+    {
+        $db = \Config\Database::connect();
+        $row = $db->table('cart_items')->where([
+            'cart_id' => $cartId,
+            'product_id' => $productId
+        ])->get()->getRowArray();
+
+        return $row ?: null;
     }
 
     // Calcule le total

@@ -35,7 +35,7 @@ class MockResponse extends Response
     }
 
     /**
-     * Artificial error for testing
+     * Simulate an error condition for testing
      *
      * @return void
      */

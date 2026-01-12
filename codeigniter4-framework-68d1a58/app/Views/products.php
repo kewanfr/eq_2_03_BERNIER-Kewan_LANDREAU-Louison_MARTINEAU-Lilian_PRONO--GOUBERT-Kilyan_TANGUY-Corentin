@@ -5,26 +5,46 @@
         $img = "/assets/img/missing_product.jpg";
     }
     ?>
-    <img class='product_img' src='<?= $img ?>' alt='<?= esc($name ?? 'Produit') ?>'>
+    <a href="/product/<?= $id ?>" style="text-decoration: none; color: inherit;">
+        <img class='product_img' src='<?= $img ?>' alt='<?= esc($name ?? 'Produit') ?>'>
+    </a>
     
     <div class='product_info'>
         <?php if (!empty($category)): ?>
             <div><span class="category-tag"><?= esc($category) ?></span></div>
         <?php endif; ?>
         
-        <span class='product_name'><?= esc($name ?? 'Nom du produit') ?></span>
+        <a href="/product/<?= $id ?>" style="text-decoration: none; color: inherit;">
+            <span class='product_name'><?= esc($name ?? 'Nom du produit') ?></span>
+        </a>
+        
+        <?php if (!empty($format)): ?>
+            <span style="font-size: 0.9em; color: #2196f3; font-weight: bold;"><?= esc($format) ?></span>
+        <?php endif; ?>
+        
         <span class='product_desc'><?= esc($desc ?? 'Description du produit') ?></span>
         
         <?php if (!empty($tags)): ?>
-            <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 5px;">
+            <div style="margin: 10px 0; width: 100%; max-width: 100%; display: flex; flex-wrap: nowrap; gap: 5px; height: 32px; overflow-x: auto; overflow-y: hidden; padding: 0; box-sizing: border-box; align-items: center;">
                 <?php foreach (explode(',', $tags) as $tag): ?>
-                    <span class="product-tag"><?= esc(trim($tag)) ?></span>
+                    <span class="product-tag" style="flex-shrink: 0;"><?= esc(trim($tag)) ?></span>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
         
+        <?php
+        $tvaRate = $tva_rate ?? 20.0;
+        $priceTTC = $price ?? 0;
+        $priceHT = $priceTTC / (1 + $tvaRate / 100);
+        ?>
+        
         <div class='price-qtt-container'>
-            <span class='product_price'><?= esc($price ?? '0') ?> €</span>
+            <div>
+                <span class='product_price'><?= number_format($priceTTC, 2) ?> € TTC</span>
+                <div style="font-size: 0.8em; color: #888;">
+                    (<?= number_format($priceHT, 2) ?> € HT)
+                </div>
+            </div>
             <span class='product_qtt'>Stock: <?= esc($quantity ?? '0') ?></span>
         </div>
         

@@ -6,7 +6,7 @@
     <title>Mon Panier</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; padding-left: 0px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1 { color: #333; margin-bottom: 20px; }
         .cart-empty { text-align: center; padding: 40px; color: #666; }
@@ -150,14 +150,32 @@
                         <img src="<?= esc($item['img_src']) ?>" alt="<?= esc($item['name']) ?>">
                         <div class="item-info">
                             <div class="item-name"><?= esc($item['name']) ?></div>
-                            <div class="item-price"><?= number_format($item['unit_price'], 2) ?> €</div>
+                            <?php 
+                            $tvaRate = $item['tva_rate'] ?? 20.0;
+                            $priceHT = $item['unit_price'] / (1 + $tvaRate / 100);
+                            $priceTTC = $item['unit_price'];
+                            ?>
+                            <div class="item-price">
+                                <div style="font-size: 14px; color: #666;">
+                                    Prix HT: <?= number_format($priceHT, 2) ?> € | 
+                                    <strong style="color: #007bff;">TTC: <?= number_format($priceTTC, 2) ?> €</strong>
+                                    <span style="font-size: 12px; color: #888;">(TVA <?= number_format($tvaRate, 1) ?>%)</span>
+                                </div>
+                            </div>
                             <div class="quantity-controls">
                                 <form method="post" action="/cart/update">
                                     <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
                                     <input type="number" name="quantity" value="<?= $item['quantity'] ?>" min="1">
                                     <button type="submit" class="update-qty-btn">Mettre à jour</button>
                                 </form>
-                                <span>Sous-total: <?= number_format($item['unit_price'] * $item['quantity'], 2) ?> €</span>
+                                <?php 
+                                $subtotalTTC = $priceTTC * $item['quantity'];
+                                $subtotalHT = $priceHT * $item['quantity'];
+                                ?>
+                                <span>
+                                    Sous-total: <strong><?= number_format($subtotalTTC, 2) ?> € TTC</strong>
+                                    <span style="font-size: 12px; color: #666;">(<?= number_format($subtotalHT, 2) ?> € HT)</span>
+                                </span>
                             </div>
                         </div>
                         <a href="/cart/remove/<?= $item['product_id'] ?>" class="remove-btn" onclick="return confirm('Retirer cet article ?')">Retirer</a>
@@ -168,8 +186,25 @@
             <div class="cart-summary">
                 <a href="/cart/clear" class="clear-cart-link" onclick="return confirm('Vider le panier ?')">🗑️ Vider le panier</a>
                 
+                <?php
+                // Calcul du total HT
+                $totalHT = 0;
+                foreach ($items as $item) {
+                    $tvaRate = $item['tva_rate'] ?? 20.0;
+                    $priceHT = $item['unit_price'] / (1 + $tvaRate / 100);
+                    $totalHT += $priceHT * $item['quantity'];
+                }
+                $totalTVA = $total - $totalHT;
+                ?>
+                
                 <div class="cart-total">
-                    Total: <?= number_format($total, 2) ?> €
+                    <div style="font-size: 16px; color: #666; margin-bottom: 10px;">
+                        Total HT: <?= number_format($totalHT, 2) ?> €<br>
+                        TVA: <?= number_format($totalTVA, 2) ?> €
+                    </div>
+                    <div style="border-top: 2px solid #333; padding-top: 10px;">
+                        <strong>Total TTC: <?= number_format($total, 2) ?> €</strong>
+                    </div>
                     <br><small style="font-size: 14px; color: #666;">(<?= $itemCount ?> article<?= $itemCount > 1 ? 's' : '' ?>)</small>
                 </div>
                 <div class="cart-actions">

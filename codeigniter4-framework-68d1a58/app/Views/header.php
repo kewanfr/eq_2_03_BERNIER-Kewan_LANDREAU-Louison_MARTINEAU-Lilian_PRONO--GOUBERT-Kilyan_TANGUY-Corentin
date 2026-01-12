@@ -63,8 +63,8 @@
     <div class="header-content">
         <div class="logo">
             <a href="/">
-                <img class="logoimg" src="./assets/img/logo.png" alt="logo">
-                <span class="logotext separate">PommeHub</span>
+                <img class="logoimg" src="/assets/img/logo.png" alt="logo">
+                <span class="logotext separate">TechnoPomme</span>
             </a>
         </div>
         <div class="navbar">
@@ -82,11 +82,25 @@
                 $userRoleModel = new \App\Models\UserRoleModel();
                 $userRoles = $userRoleModel->getUserRoles(auth()->id());
                 $username = auth()->user()->username ?? 'Utilisateur';
+                
+                // Récupère le type de client
+                $db = \Config\Database::connect();
+                $userInfo = $db->table('users')->where('id', auth()->id())->get()->getRow();
+                $customerType = $userInfo->customer_type ?? 'particulier';
+                $companyName = $userInfo->company_name ?? null;
                 ?>
                 <div class="login-link" style="cursor: default;">
                     <i class="material-symbols-outlined loginicon" style="font-size: 50px;">account_circle</i>
                     <span class="login text user-info-header">
-                        <span class="username"><?= esc($username) ?></span>
+                        <span class="username">
+                            <?= esc($username) ?>
+                            <?php if ($customerType === 'professionnel'): ?>
+                                <span style="font-size: 0.8em; color: #ffd700;">PRO</span>
+                            <?php endif; ?>
+                        </span>
+                        <?php if ($customerType === 'professionnel' && $companyName): ?>
+                            <span style="font-size: 0.85em; opacity: 0.9;"><?= esc($companyName) ?></span>
+                        <?php endif; ?>
                         <span class="roles">
                             <?php foreach ($userRoles as $role): ?>
                                 <span class="role-badge-header"><?= esc(ucfirst($role)) ?></span>
@@ -132,8 +146,17 @@
                 <a href="/orders" class="menu orders">Mes commandes</a>
             </div>
             <div class="menu menu-container">
+                <a href="/profile" class="menu profile">Mon profil</a>
+            </div>
+            <?php 
+            // Affiche le menu admin seulement pour les utilisateurs avec des rôles internes (pas client)
+            $internalRoles = array_diff($userRoles, ['client']);
+            if (!empty($internalRoles)): 
+            ?>
+            <div class="menu menu-container">
                 <a href="/admin" class="menu admin">Admin</a>
             </div>
+            <?php endif; ?>
         <?php endif; ?>
         <div class="bottom-separator"></div>
     </div>
@@ -147,8 +170,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
 // Fonction pour ajouter au panier
 function addToCart(productId, button) {
-    const qtyInput = button.previousElementSibling;
-    const quantity = qtyInput.value;
+    const qtyInput = document.getElementById('qty-' + productId);
+    const quantity = qtyInput ? qtyInput.value : 1;
     const feedback = button.nextElementSibling;
     
     // Désactive le bouton
@@ -165,6 +188,8 @@ function addToCart(productId, button) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Réponse du serveur:', data);
+        
         // Si redirection nécessaire (non connecté)
         if (data.redirect) {
             alert(data.message || 'Vous devez être connecté pour ajouter au panier');
@@ -187,6 +212,7 @@ function addToCart(productId, button) {
                 feedback.style.display = 'none';
             }, 2000);
         } else {
+            console.error('Erreur serveur:', data.message);
             button.style.background = '#dc3545';
             button.textContent = data.message || 'Erreur';
             setTimeout(() => {
@@ -197,8 +223,9 @@ function addToCart(productId, button) {
         }
     })
     .catch(error => {
+        console.error('Erreur AJAX:', error);
         button.style.background = '#dc3545';
-        button.textContent = 'Erreur';
+        button.textContent = 'Erreur réseau';
         setTimeout(() => {
             button.style.background = '#28a745';
             button.textContent = 'Ajouter au panier';

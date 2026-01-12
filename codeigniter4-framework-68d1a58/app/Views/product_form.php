@@ -157,12 +157,12 @@
     <div class="sidebar">
         <h2>Administration</h2>
         <ul>
-            <li><a href="/admin">📊 Tableau de bord</a></li>
-            <li><a href="/admin/products" class="active">📦 Produits</a></li>
-            <li><a href="/admin/orders">📋 Commandes</a></li>
-            <li><a href="/admin/users">👥 Utilisateurs</a></li>
-            <li><a href="/admin/stock">📊 Stock</a></li>
-            <li><a href="/">🏠 Retour au site</a></li>
+            <li><a href="/admin">Tableau de bord</a></li>
+            <li><a href="/admin/products" class="active">Produits</a></li>
+            <li><a href="/admin/orders">Commandes</a></li>
+            <li><a href="/admin/users">Utilisateurs</a></li>
+            <li><a href="/admin/stock">Stock</a></li>
+            <li><a href="/">Retour au site</a></li>
         </ul>
     </div>
     

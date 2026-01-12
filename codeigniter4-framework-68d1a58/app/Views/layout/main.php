@@ -18,6 +18,69 @@
             background-attachment: fixed;
         }
         
+        .age-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .age-modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .age-modal h2 {
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+        
+        .age-modal p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .age-modal button {
+            margin: 10px;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .age-modal .btn-yes {
+            background: #c41e3a;
+            color: white;
+        }
+        
+        .age-modal .btn-yes:hover {
+            background: #a01829;
+        }
+        
+        .age-modal .btn-no {
+            background: #8bc34a;
+            color: white;
+        }
+        
+        .age-modal .btn-no:hover {
+            background: #7cb342;
+        }
+        
         .search-filters {
             background: rgba(255,255,255,0.9);
             padding: 25px;
@@ -108,8 +171,8 @@
         
         .product_img {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
+            max-height: 180px;
+            object-fit: contain;
             border-radius: 10px;
             margin-bottom: 12px;
         }
@@ -203,6 +266,19 @@
     </style>
 </head>
 <body>
+    <!-- Modal vérification d'âge -->
+    <div id="ageModal" class="age-modal">
+        <div class="age-modal-content">
+            <h2>🍎 Bienvenue chez TechnoPomme</h2>
+            <p>Avez-vous plus de 18 ans ?</p>
+            <p style="font-size: 0.9em; color: #999;">Notre site contient des produits alcoolisés.</p>
+            <div>
+                <button class="btn-yes" onclick="confirmAge(true)">Oui, j'ai 18 ans ou plus</button>
+                <button class="btn-no" onclick="confirmAge(false)">Non, j'ai moins de 18 ans</button>
+            </div>
+        </div>
+    </div>
+
     <?= view('header') ?>
     <?= view('cookies') ?>
     
@@ -212,25 +288,29 @@
         <img src="/assets/img/gwenn-ha-du.svg" alt="Gwenn ha du" style="position: absolute; top: 20px; right: 20px; width: 70px; height: auto; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         
         <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 20px; text-align: center;">
-            🍎 PommeHub - Cidrerie artisanale 
+            🍎 PommeHub - Plateforme de cidreries artisanales
         </h2>
         <div style="max-width: 900px; margin: 0 auto; line-height: 1.8; color: #333;">
             <p style="font-size: 1.1em; margin-bottom: 15px;">
-                Bienvenue chez <strong>PommeHub</strong>, votre cidrerie artisanale de tradition bretonne. 
-                Filiale de <strong>Technochantier & CIE</strong>, nous cultivons nos vergers avec passion depuis plus de 30 ans 
-                et produisons des cidres, jus de pomme et vinaigres d'exception.
+                Bienvenue sur la plateforme PommeHub, filiale de <strong>Technochantier & CIE</strong>, elle regroupe nos produits ainsi que ceux de nos cidreries artisanales partenaires de la région.
+                <br /><br />
+                Nous sommes <strong>TechnoPomme</strong>, votre cidrerie artisanale de tradition bretonne.
+                Nous sommes fiers de perpétuer un savoir-faire ancestral transmis de génération en génération à travers cette cidrerie familiale, nous cultivons nos vergers avec passion depuis plus de 30 ans 
+                et produisons des cidres, jus de pomme et vinaigres d'exception. 
+
+                
             </p>
-            <p style="font-size: 1.1em; margin-bottom: 15px;">
+            <p style="font-size: 1.1em; margin-bottom: 25px;">
                 Nos produits sont élaborés à partir de pommes 100% locales, récoltées à la main et 
                 transformées selon des méthodes traditionnelles. Nous privilégions les variétés anciennes 
                 et le respect des saisons pour vous offrir des saveurs authentiques.
-            </p>
+            </p> 
             <p style="font-size: 0.95em; margin-bottom: 15px; color: #666; font-style: italic;">
-                <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : 
-                <a href="https://technochantier.kewan.fr/" target="_blank" style="color: #c41e3a; text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), 
-                <strong>GlobalBeats</strong> (plateforme musicale) et 
-                <strong>Framework</strong> (ordinateurs modulaires et facilement réparables).
-            </p>
+                <strong>Technochantier & CIE</strong> est notre groupe familial qui regroupe également nos sociétés sœurs : <br />
+                <a href="https://technochantier.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Technochantier</a> (équipements de chantier innovants), <a href="https://dassault.kewan.fr/" target="_blank" style="text-decoration: none; font-weight: bold;">Dassault Aviation</a>, 
+                <strong>GlobalBeats</strong> (plateforme musicale), <a href="https://drive.google.com/file/d/13PCXfaCm7-R-S_K38ZEEr_gcUSvgUumz/view?usp=sharing" target="_blank" style="text-decoration: none; font-weight: bold;">Marc&Co</a> (Leader du dosage anisé avec le Ricassou 3000),
+                <a href="https://www.canva.com/design/DAGpexFnL78/URfhrRUflnu_joc9DE2KyQ/edit" target="_blank" style="text-decoration: none; font-weight: bold;">Brickophone</a> (smartphone modulaires et facilement réparables) et <strong>RéparEco</strong> (formation de réparations d'équipements électroniques).
+            </p>¨
             <p style="font-size: 1.1em; color: #8bc34a; font-weight: bold; text-align: center; margin-top: 20px;">
                 🌱 Agriculture responsable • 🍏 Savoir-faire artisanal • 🏆 Qualité premium
             </p>
@@ -239,7 +319,7 @@
     
     <!-- Produits phares -->
     <div style="background: rgba(255,255,255,0.95); padding: 40px 20px; margin: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
-        <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 30px; text-align: center;">⭐ Nos Produits Phares</h2>
+        <h2 style="color: #c41e3a; font-size: 2em; margin-bottom: 30px; text-align: center; align-items:center;">⭐ Nos Produits Phares</h2>
         <div class="products-container" style="margin-bottom: 30px;">
             <?php 
             $featuredProducts = array_slice($products, 0, 3); 
@@ -258,7 +338,7 @@
     <!-- Tous les produits sur la page d'accueil -->
     <div id="all-products" style="margin-top: 40px;">
         <h2 style="color: #8b4513; font-size: 1.8em; margin: 20px; text-align: center; background: rgba(255,255,255,0.8); padding: 20px; border-radius: 10px;">
-            📦 Tous nos produits
+            Tous nos produits
         </h2>
         
         <div class="products-container">
@@ -267,5 +347,45 @@
             <?php endforeach; ?>
         </div>
     </div>
+
+    <script>
+        // Vérification d'âge au chargement
+        window.addEventListener('DOMContentLoaded', function() {
+            const ageVerified = sessionStorage.getItem('ageVerified');
+            if (!ageVerified) {
+                document.getElementById('ageModal').style.display = 'flex';
+            } else if (ageVerified === 'under18') {
+                filterAlcoolProducts();
+            }
+        });
+
+        function confirmAge(isAdult) {
+            if (isAdult) {
+                sessionStorage.setItem('ageVerified', 'adult');
+                document.getElementById('ageModal').style.display = 'none';
+            } else {
+                sessionStorage.setItem('ageVerified', 'under18');
+                document.getElementById('ageModal').style.display = 'none';
+                filterAlcoolProducts();
+            }
+        }
+
+        function filterAlcoolProducts() {
+            // Catégories sans alcool
+            const nonAlcoolCategories = ['Jus', 'Vinaigres', 'Confitures', 'Coffrets'];
+            
+            // Masquer tous les produits avec alcool
+            const allProducts = document.querySelectorAll('.product-container');
+            allProducts.forEach(product => {
+                const categoryTag = product.querySelector('.category-tag');
+                if (categoryTag) {
+                    const category = categoryTag.textContent.trim();
+                    if (!nonAlcoolCategories.includes(category)) {
+                        product.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
