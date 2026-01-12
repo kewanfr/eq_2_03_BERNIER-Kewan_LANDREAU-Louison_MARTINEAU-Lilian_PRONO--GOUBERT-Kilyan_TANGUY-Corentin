@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use App\Enums\OrderStatus;
+use App\Enums\StockMovementReason;
+use App\Enums\DeliveryMethod;
 
 /**
  * Gestion des commandes
@@ -14,16 +17,8 @@ class OrderModel extends Model
     protected $allowedFields = ['user_id', 'order_date', 'status', 'total_ht', 'total_ttc', 'delivery_address_id', 'billing_address_id', 'delivery_method', 'delivery_cost'];
     protected $useTimestamps = false;
 
-    // Statuts possibles
-    const STATUS_PAYEE = 'PAYEE';
-    const STATUS_EN_PREPARATION = 'EN_PREPARATION';
-    const STATUS_PRETE = 'PRETE';
-    const STATUS_EXPEDIEE = 'EXPEDIEE';
-    const STATUS_LIVREE = 'LIVREE';
-    const STATUS_ANNULEE = 'ANNULEE';
-
     // Crée une commande depuis le panier
-    public function createFromCart(int $userId, int $cartId, string $deliveryMethod = 'pickup', float $deliveryCost = 0.0)
+    public function createFromCart(int $userId, int $cartId, DeliveryMethod|string $deliveryMethod = DeliveryMethod::PICKUP, float $deliveryCost = 0.0)
     {
         $cartModel = new CartModel();
         $items = $cartModel->getCartItems($cartId);
@@ -37,14 +32,19 @@ class OrderModel extends Model
         $totalHT = $total / (1 + $tva);
         $totalTTC = $total + $deliveryCost; // Ajoute les frais de livraison
 
+        // Convertir DeliveryMethod en string si nécessaire
+        $deliveryMethodValue = $deliveryMethod instanceof DeliveryMethod 
+            ? $deliveryMethod->value 
+            : $deliveryMethod;
+
         // Crée la commande
         $orderData = [
             'user_id' => $userId,
             'order_date' => date('Y-m-d H:i:s'),
-            'status' => self::STATUS_PAYEE,
+            'status' => OrderStatus::PAYEE->value,
             'total_ht' => $totalHT,
             'total_ttc' => $totalTTC,
-            'delivery_method' => $deliveryMethod,
+            'delivery_method' => $deliveryMethodValue,
             'delivery_cost' => $deliveryCost
         ];
 
@@ -76,11 +76,10 @@ class OrderModel extends Model
             // Journalise le mouvement de stock (commande)
             $movementModel->logMovement(
                 (int)$item['product_id'],
-                -(int)$item['quantity'],
-                'ORDER',
+                (int)$item['quantity'],
+                StockMovementReason::ORDER,
                 $userId,
-                $orderId,
-                'Décrémentation via commande'
+                $orderId
             );
         }
 
@@ -144,22 +143,28 @@ class OrderModel extends Model
     }
 
     // Change le statut
-    public function changeStatus(int $orderId, string $newStatus): bool
+    public function changeStatus(int $orderId, OrderStatus|string $newStatus): bool
     {
-        $validStatuses = [
-            self::STATUS_PAYEE,
-            self::STATUS_EN_PREPARATION,
-            self::STATUS_PRETE,
-            self::STATUS_EXPEDIEE,
-            self::STATUS_LIVREE,
-            self::STATUS_ANNULEE
-        ];
+        // Convertir string en enum si nécessaire
+        $statusEnum = $newStatus instanceof OrderStatus 
+            ? $newStatus 
+            : OrderStatus::tryFrom($newStatus);
 
-        if (!in_array($newStatus, $validStatuses)) {
+        if ($statusEnum === null) {
             return false;
         }
 
-        return $this->update($orderId, ['status' => $newStatus]);
+        // Vérifier la transition (optionnel: vérifier depuis le statut actuel)
+        $order = $this->find($orderId);
+        if ($order) {
+            $currentStatus = OrderStatus::fromString($order['status']);
+            if (!$currentStatus->canTransitionTo($statusEnum)) {
+                log_message('warning', "Transition invalide: {$currentStatus->value} -> {$statusEnum->value}");
+                // On permet quand même pour l'admin, mais on log
+            }
+        }
+
+        return $this->update($orderId, ['status' => $statusEnum->value]);
     }
 
     // Annule une commande
@@ -167,12 +172,18 @@ class OrderModel extends Model
     {
         $order = $this->find($orderId);
         
-        if (!$order || $order['status'] === self::STATUS_LIVREE) {
-            log_message('error', 'Cannot cancel order #' . $orderId . ' - Order not found or already delivered');
+        if (!$order) {
+            log_message('error', 'Cannot cancel order #' . $orderId . ' - Order not found');
             return false;
         }
 
-        log_message('info', 'Cancelling order #' . $orderId . ' - Current status: ' . $order['status']);
+        $currentStatus = OrderStatus::fromString($order['status']);
+        if (!$currentStatus->canBeCancelled()) {
+            log_message('error', 'Cannot cancel order #' . $orderId . ' - Status ' . $currentStatus->label() . ' cannot be cancelled');
+            return false;
+        }
+
+        log_message('info', 'Cancelling order #' . $orderId . ' - Current status: ' . $currentStatus->value);
 
         // Restaure le stock
         $db = \Config\Database::connect();
@@ -193,22 +204,21 @@ class OrderModel extends Model
             $movementModel->logMovement(
                 (int)$item['product_id'],
                 (int)$item['quantity'],
-                'CANCELLATION',
+                StockMovementReason::CANCELLATION,
                 (int)$order['user_id'] ?? null,
-                $orderId,
-                'Restauration de stock après annulation'
+                $orderId
             );
         }
 
         // Changement de statut
-        $result = $this->update($orderId, ['status' => self::STATUS_ANNULEE]);
+        $result = $this->update($orderId, ['status' => OrderStatus::ANNULEE->value]);
         log_message('info', 'Status update result for order #' . $orderId . ': ' . ($result ? 'SUCCESS' : 'FAILED'));
         
         // Vérification
         $updatedOrder = $this->find($orderId);
         log_message('info', 'Order #' . $orderId . ' new status: ' . $updatedOrder['status']);
         
-        return $updatedOrder['status'] === self::STATUS_ANNULEE;
+        return $updatedOrder['status'] === OrderStatus::ANNULEE->value;
     }
 
     // Stats pour dashboard

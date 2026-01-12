@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\OrderModel;
 use App\Models\CartModel;
+use App\Enums\OrderStatus;
 use CodeIgniter\Controller;
 
 // Gère les commandes côté client
@@ -109,7 +110,8 @@ class OrderController extends Controller
         }
 
         // Annulation seulement si la commande n'est pas encore en préparation
-        if ($order['status'] !== OrderModel::STATUS_PAYEE) {
+        $currentStatus = OrderStatus::fromString($order['status']);
+        if (!$currentStatus->canBeCancelled()) {
             return redirect()->to('/orders/' . $id)->with('error', "La commande ne peut plus être annulée car elle est déjà en préparation ou au-delà.");
         }
 

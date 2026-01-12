@@ -7,6 +7,7 @@ use App\Models\OrderModel;
 use App\Models\UserRoleModel;
 use App\Models\Users;
 use App\Enums\RoleInterne;
+use App\Enums\OrderStatus;
 use CodeIgniter\Controller;
 
 /**
@@ -45,7 +46,8 @@ class AdminController extends Controller
         
         // Vérifie si AU MOINS UN des rôles a la permission
         foreach ($userRoles as $role) {
-            if (RoleInterne::hasPermission($role, $permission)) {
+            $roleEnum = RoleInterne::tryFrom($role);
+            if ($roleEnum && $roleEnum->hasPermission($permission)) {
                 return true;
             }
         }
@@ -264,14 +266,7 @@ class AdminController extends Controller
         
         $data = [
             'orders' => $this->orderModel->getAllOrders($status),
-            'statuses' => [
-                OrderModel::STATUS_PAYEE,
-                OrderModel::STATUS_EN_PREPARATION,
-                OrderModel::STATUS_PRETE,
-                OrderModel::STATUS_EXPEDIEE,
-                OrderModel::STATUS_LIVREE,
-                OrderModel::STATUS_ANNULEE
-            ]
+            'statuses' => OrderStatus::cases()
         ];
 
         return view('admin/orders/index', $data);
