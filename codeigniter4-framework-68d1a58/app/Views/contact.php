@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - PommeHub</title>
+    <title>Contact - technopomme</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,6 +11,7 @@
             background: linear-gradient(to bottom, #f5f5dc 0%, #d2b48c 100%);
             background-attachment: fixed;
             padding: 20px;
+            padding-left: 0px;
         }
         
         .container {
@@ -163,7 +164,7 @@
                     <span>✉️</span>
                     <div>
                         <strong>Email:</strong><br>
-                        contact@pommehub.fr
+                        contact@technopomme.fr
                     </div>
                 </div>
                 <div class="info-item">

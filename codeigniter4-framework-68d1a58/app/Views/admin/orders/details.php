@@ -21,10 +21,40 @@
     <h2>Informations client</h2>
     <div class="info-group">
         <strong>Utilisateur:</strong> <?= esc($order['username']) ?>
+        <?php if ($order['customer_type'] === 'professionnel'): ?>
+            <span style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #8b6914; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;">PRO</span>
+        <?php endif; ?>
     </div>
+    <?php if ($order['customer_type'] === 'professionnel'): ?>
+        <?php if (!empty($order['company_name'])): ?>
+        <div class="info-group">
+            <strong>Entreprise:</strong> <?= esc($order['company_name']) ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($order['siret'])): ?>
+        <div class="info-group">
+            <strong>SIRET:</strong> <?= esc($order['siret']) ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($order['tva_number'])): ?>
+        <div class="info-group">
+            <strong>N° TVA:</strong> <?= esc($order['tva_number']) ?>
+        </div>
+        <?php endif; ?>
+    <?php endif; ?>
     <?php if (!empty($order['email'])): ?>
     <div class="info-group">
         <strong>Email:</strong> <?= esc($order['email']) ?>
+    </div>
+    <?php endif; ?>
+    <?php if (!empty($order['phone'])): ?>
+    <div class="info-group">
+        <strong>Téléphone:</strong> <?= esc($order['phone']) ?>
+    </div>
+    <?php endif; ?>
+    <?php if (!empty($order['address'])): ?>
+    <div class="info-group">
+        <strong>Adresse:</strong> <?= esc($order['address']) ?>
     </div>
     <?php endif; ?>
 </div>
@@ -36,9 +66,54 @@
     </div>
     <div class="info-group">
         <strong>Statut actuel:</strong> 
-        <span style="background: #ffc107; padding: 5px 10px; border-radius: 4px; display: inline-block;">
+        <?php
+        $statusColor = '#6c757d';
+        $statusBg = '#e9ecef';
+        switch($order['status']) {
+            case 'PAYEE':
+                $statusColor = '#856404';
+                $statusBg = '#fff3cd';
+                break;
+            case 'EN_PREPARATION':
+                $statusColor = '#856404';
+                $statusBg = '#fff3cd';
+                break;
+            case 'PRETE':
+                $statusColor = '#0c5460';
+                $statusBg = '#d1ecf1';
+                break;
+            case 'EXPEDIEE':
+                $statusColor = '#0c5460';
+                $statusBg = '#d1ecf1';
+                break;
+            case 'LIVREE':
+                $statusColor = '#155724';
+                $statusBg = '#d4edda';
+                break;
+            case 'ANNULEE':
+                $statusColor = '#721c24';
+                $statusBg = '#f8d7da';
+                break;
+        }
+        ?>
+        <span style="background: <?= $statusBg ?>; color: <?= $statusColor ?>; padding: 5px 12px; border-radius: 12px; display: inline-block; font-weight: bold; font-size: 13px;">
             <?= $order['status'] ?>
         </span>
+    </div>
+    <div class="info-group">
+        <strong>Mode de livraison:</strong>
+        <?php
+        $deliveryNames = [
+            'pickup' => 'Retrait à la cidrerie',
+            'local_delivery' => 'Livraison locale',
+            'carrier_delivery' => 'Livraison transporteur'
+        ];
+        $deliveryMethod = $order['delivery_method'] ?? 'pickup';
+        ?>
+        <?= $deliveryNames[$deliveryMethod] ?? 'Retrait à la cidrerie' ?>
+    </div>
+    <div class="info-group">
+        <strong>Frais de livraison:</strong> <?= number_format($order['delivery_cost'] ?? 0, 2) ?> €
     </div>
     <div class="info-group">
         <strong>Total HT:</strong> <?= number_format($order['total_ht'], 2) ?> €
@@ -131,30 +206,25 @@
                 }
                 
                 foreach ($statuses as $status):
+                    $selected = ($status === $currentStatus) ? 'selected' : '';
                 ?>
-                    <option value="<?= $status ?>"><?= $status ?></option>
+                    <option value="<?= $status ?>" <?= $selected ?>><?= $status ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         
         <?php if (!empty($statuses)): ?>
-            <button type="submit" class="btn-primary">Mettre à jour le statut</button>
+            <button type="submit" class="btn-primary" style="background: #8bc34a; color: white; padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.3s;" onmouseover="this.style.background='#7cb342'" onmouseout="this.style.background='#8bc34a'">✓ Mettre à jour le statut</button>
         <?php else: ?>
             <p style="color: #999; font-style: italic;">
                 Aucune action disponible pour votre rôle sur cette commande.
             </p>
         <?php endif; ?>
+        
+        <?php if ($isAdmin || $isCommercial): ?>
+            <button type="submit" name="action" value="cancel" style="background: #dc3545; color: white; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: normal; font-size: 13px; transition: all 0.3s; margin-left: 10px;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'" onclick="return confirm('⚠️ Voulez-vous vraiment annuler cette commande ?\n\nLe stock des produits sera restauré automatiquement.');">✗ Annuler la commande</button>
+        <?php endif; ?>
     </form>
-    
-    <?php if ($isAdmin || $isCommercial): ?>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-            <form method="post" action="/admin/orders/<?= $order['id'] ?>/cancel" 
-                  onsubmit="return confirm('Voulez-vous vraiment annuler cette commande ? Le stock sera restauré.');">
-                <input type="hidden" name="cancel" value="1">
-                <button type="submit" class="btn-danger">Annuler la commande</button>
-            </form>
-        </div>
-    <?php endif; ?>
 </div>
 <?php else: ?>
 <div class="content-card">

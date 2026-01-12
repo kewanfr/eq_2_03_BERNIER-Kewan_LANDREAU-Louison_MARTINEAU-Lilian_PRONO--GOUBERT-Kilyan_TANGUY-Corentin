@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
-    <title>Erreur - PommeHub</title>
+    <title>Erreur - TechnoPomme</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
         .error-container { max-width: 600px; margin: 100px auto; text-align: center; background: white; padding: 50px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }

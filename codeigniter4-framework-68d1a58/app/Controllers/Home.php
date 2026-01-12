@@ -20,9 +20,10 @@ class Home extends BaseController
         
         // Filtre les produits
         if ($search || $category || $tag) {
-            $products = $model->searchAndFilter($search, $category, $tag);
+            $products = $model->searchAndFilter($search, $category, $tag, null, null, 10);
         } else {
-            $products = $model->getAllProducts();
+            // Page d'accueil: afficher seulement 10 produits actifs
+            $products = $model->getAllActiveProducts(10);
         }
         
         $data = [

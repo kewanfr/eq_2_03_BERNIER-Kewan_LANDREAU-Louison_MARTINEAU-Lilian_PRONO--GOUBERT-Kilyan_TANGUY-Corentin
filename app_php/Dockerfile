@@ -50,30 +50,10 @@ cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 echo ----------------------------
 echo "Installation des extensions PHP :"
 echo ----------------------------
-PHP_VERSION_MINEUR=${PHP_VERSION%.*}
-echo "---- common"
-apt install -y -q php${PHP_VERSION_MINEUR}-common
-echo "---- CI4 base : intl, mbstring, json (fourni de base)"
-apt install -y -q php${PHP_VERSION_MINEUR}-intl
-sed -i 's/;extension=intl/extension=intl/g' /usr/local/etc/php/php.ini
-apt install -y -q php${PHP_VERSION_MINEUR}-mbstring
-sed -i 's/;extension=mbstring/extension=mbstring/g' /usr/local/etc/php/php.ini
-echo "---- SQLite3"
-apt install -y -q php${PHP_VERSION_MINEUR}-pdo-sqlite
-sed -i 's/;extension=pdo_sqlite/extension=pdo_sqlite/g' /usr/local/etc/php/php.ini
-apt install -y -q php${PHP_VERSION_MINEUR}-sqlite3
-sed -i 's/;extension=sqlite3/extension=sqlite3/g' /usr/local/etc/php/php.ini
-echo "---- CI4 Optionnelles : MySQLi,curl, gd"
-apt install -y -q php${PHP_VERSION_MINEUR}-pdo-mysql
-sed -i 's/;extension=pdo_mysql/extension=pdo_mysql/g' /usr/local/etc/php/php.ini
-apt install -y -q php${PHP_VERSION_MINEUR}-mysql
-sed -i 's/;extension=mysqli/extension=mysqli/g' /usr/local/etc/php/php.ini
-apt install -y -q php${PHP_VERSION_MINEUR}-curl
-sed -i 's/;extension=curl/extension=curl/g' /usr/local/etc/php/php.ini
-apt install -y -q php${PHP_VERSION_MINEUR}-gd
-sed -i 's/;extension=gd/extension=gd/g' /usr/local/etc/php/php.ini
-#recopie des .so
-cp /usr/lib/php/20240924/*.so /usr/local/lib/php/extensions/no-debug-non-zts-20240924
+echo "Activation de l'extension intl (Locale) via docker-php-ext-install"
+apt-get -y -q install libicu-dev
+docker-php-ext-install intl
+docker-php-ext-enable intl
 echo ----------------------------
 echo "Suppression des virtuals hosts"
 echo ----------------------------

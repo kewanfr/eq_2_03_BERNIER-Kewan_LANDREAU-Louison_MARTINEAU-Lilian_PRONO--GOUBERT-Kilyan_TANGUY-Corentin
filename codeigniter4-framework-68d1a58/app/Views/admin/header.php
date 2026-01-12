@@ -26,6 +26,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 30px;
+        }
+        
+        .back-link {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.25);
         }
         
         .admin-header h1 {
@@ -206,9 +222,11 @@
 </head>
 <body>
     <div class="admin-header">
-        <div>
-            <h1>Administration Cidrerie</h1>
-        </div>
+        <a href="/" class="back-link">← Retour au site</a>
+        
+        <a href="/" style="text-decoration: none; color: white;">
+            <h1>Administration TechnoPomme</h1>
+        </a>
         <div class="admin-nav">
             <nav>
                 <a href="/admin">Dashboard</a>
@@ -241,7 +259,6 @@
                     <a href="/admin/users">Utilisateurs</a>
                 <?php endif; ?>
                 
-                <a href="/">Site public</a>
             </nav>
             <div class="user-info">
                 <div class="user-details">

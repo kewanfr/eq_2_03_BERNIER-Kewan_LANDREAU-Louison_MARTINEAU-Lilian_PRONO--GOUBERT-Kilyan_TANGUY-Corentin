@@ -37,6 +37,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Client</th>
+                    <th>Type</th>
                     <th>Date</th>
                     <th>Montant</th>
                     <th>Statut</th>
@@ -47,7 +48,19 @@
                 <?php foreach (array_slice($recentOrders, 0, 10) as $order): ?>
                     <tr>
                         <td>#<?= $order['id'] ?></td>
-                        <td><?= esc($order['username']) ?></td>
+                        <td>
+                            <?= esc($order['username']) ?>
+                            <?php if ($order['customer_type'] === 'professionnel' && !empty($order['company_name'])): ?>
+                                <br><small style="color: #666;"><?= esc($order['company_name']) ?></small>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($order['customer_type'] === 'professionnel'): ?>
+                                <span style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #8b6914; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 3px;">PRO</span>
+                            <?php else: ?>
+                                <span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold;">Particulier</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?= date('d/m/Y H:i', strtotime($order['order_date'])) ?></td>
                         <td><?= number_format($order['total_ttc'], 2) ?> €</td>
                         <td>
@@ -55,7 +68,8 @@
                             $badgeClass = 'badge-info';
                             if ($order['status'] === 'LIVREE') $badgeClass = 'badge-success';
                             elseif ($order['status'] === 'ANNULEE') $badgeClass = 'badge-danger';
-                            elseif ($order['status'] === 'EN_PREPARATION') $badgeClass = 'badge-warning';
+                            elseif ($order['status'] === 'EN_PREPARATION' || $order['status'] === 'PAYEE') $badgeClass = 'badge-warning';
+                            elseif ($order['status'] === 'PRETE' || $order['status'] === 'EXPEDIEE') $badgeClass = 'badge-info';
                             ?>
                             <span class="badge <?= $badgeClass ?>"><?= $order['status'] ?></span>
                         </td>

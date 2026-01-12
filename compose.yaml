@@ -6,8 +6,7 @@ services:
       target: builder
 
     volumes:
-      - ./codeigniter4-framework-68d1a58:/var/www/
-      - ./codeigniter4-framework-68d1a58/public:/var/www/html/
+      - ./codeigniter4-framework-68d1a58:/var/www/html
     ports:
       - '8080:80'
       - '8081:81'

@@ -56,12 +56,40 @@ class CartController extends Controller
             ]);
         }
 
-        $productId = $this->request->getPost('product_id');
-        $quantity = $this->request->getPost('quantity') ?? 1;
+        // Accepte les données en POST ou JSON
+        $productId = null;
+        $quantity = 1;
+        
+        // Vérifie d'abord le Content-Type pour éviter les erreurs de parsing
+        $contentType = $this->request->getHeaderLine('Content-Type');
+        
+        if (strpos($contentType, 'application/json') !== false) {
+            // Si c'est du JSON, on le parse
+            try {
+                $json = $this->request->getJSON();
+                if ($json) {
+                    $productId = $json->product_id ?? null;
+                    $quantity = $json->quantity ?? 1;
+                }
+            } catch (\Exception $e) {
+                // Si le parsing JSON échoue, on continue avec POST
+                log_message('debug', 'JSON parsing failed, fallback to POST: ' . $e->getMessage());
+            }
+        }
+        
+        // Si pas de données JSON, on essaie POST
+        if ($productId === null) {
+            $productId = $this->request->getPost('product_id');
+            $quantity = $this->request->getPost('quantity') ?? 1;
+        }
+
+        // Debug log
+        log_message('debug', 'Cart add - Product ID: ' . $productId . ', Quantity: ' . $quantity);
 
         // Valide les données
         if (!$productId || $quantity < 1) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Données invalides']);
+            log_message('error', 'Cart add - Invalid data: productId=' . var_export($productId, true) . ', quantity=' . var_export($quantity, true));
+            return $this->response->setJSON(['success' => false, 'message' => 'Données invalides (ID: ' . $productId . ', Qté: ' . $quantity . ')']);
         }
 
         // Vérifie que le produit existe
@@ -71,12 +99,16 @@ class CartController extends Controller
         }
 
         // Vérifie le stock
-        if ($product['quantity'] < $quantity) {
+        // Calcul de la quantité cumulée déjà présente dans le panier
+        $userId = auth()->id();
+        $cartId = $this->cartModel->getOrCreateCart($userId);
+        $existingItem = $this->cartModel->getItem($cartId, (int)$productId);
+        $currentQty = $existingItem ? (int)$existingItem['quantity'] : 0;
+
+        if ((int)$product['quantity'] < ($currentQty + (int)$quantity)) {
             return $this->response->setJSON(['success' => false, 'message' => 'Stock insuffisant']);
         }
 
-        $userId = auth()->id();
-        $cartId = $this->cartModel->getOrCreateCart($userId);
 
         if ($this->cartModel->addItem($cartId, $productId, $quantity)) {
             return $this->response->setJSON(['success' => true, 'message' => 'Produit ajouté']);
