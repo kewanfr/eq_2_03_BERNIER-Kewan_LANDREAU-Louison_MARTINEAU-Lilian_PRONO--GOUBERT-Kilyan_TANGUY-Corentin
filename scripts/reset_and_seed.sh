@@ -6,6 +6,11 @@ DB_FILE="$APP_DIR/writable/db_sae.db"
 
 echo "[reset] Stopping containers (optional)"
 
+echo "[reset] Ensuring writable directory exists"
+# mkdir -p "$APP_DIR/writable"
+# chmod 775 "$APP_DIR/writable"
+docker exec php bash -lc "mkdir -p '$APP_DIR/writable/cache' && chmod -R 777 '$APP_DIR/writable'"
+
 echo "[reset] Removing SQLite database file: $DB_FILE"
 docker exec php bash -lc "rm -f '$DB_FILE'"
 

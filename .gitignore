@@ -2,10 +2,6 @@
 .idea
 ignore/
 codeigniter4-framework-68d1a58/vendor
-codeigniter4-framework-68d1a58/writable/cache
-codeigniter4-framework-68d1a58/writable/debugbar
-codeigniter4-framework-68d1a58/writable/logs
-codeigniter4-framework-68d1a58/writable/session
-codeigniter4-framework-68d1a58/writable/uploads
+
 
 /vendor/

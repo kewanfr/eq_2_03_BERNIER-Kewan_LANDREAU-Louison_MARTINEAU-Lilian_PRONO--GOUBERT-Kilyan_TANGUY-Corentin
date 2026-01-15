@@ -6,6 +6,7 @@ echo ""
 
 cd "$(dirname "$0")/.."
 
+
 # Détection de la commande docker compose disponible
 if command -v docker-compose &> /dev/null; then
     DOCKER_COMPOSE="docker-compose"
@@ -24,7 +25,14 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "📚 Installation des dépendances Composer..."
     docker exec php bash -lc "cd /var/www/html && composer install"
-    
+
+    # if writable directory does not exist, create it
+    if ! docker exec php bash -lc "[ -d /var/www/html/writable ]"; then
+        echo "📁 Création du répertoire writable et migration de la base de données"
+        sh scripts/reset_and_seed.sh
+    fi
+
+
     echo ""
     echo "✅ Application démarrée avec succès !"
     echo ""

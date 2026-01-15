@@ -1,5 +1,8 @@
+
+<!-- Inclusion du header commun -->
 <?= view('header') ?>
 
+<!-- Style CSS pour la page profil -->
 <style>
     .profile-container {
         max-width: 900px;
@@ -121,26 +124,35 @@
     }
 </style>
 
+<!--
+Page de profil utilisateur
+Affiche les informations personnelles et professionnelles, permet la modification du profil et le changement de mot de passe.
+-->
 <div class="profile-container">
+    <!-- Titre principal -->
     <h1 style="color: #8b4513; margin-bottom: 30px;">Mon Profil</h1>
     
+    <!-- Affichage des messages de succès -->
     <?php if (session()->has('success')): ?>
         <div class="alert alert-success"><?= session('success') ?></div>
     <?php endif; ?>
     
+    <!-- Affichage des messages d'erreur -->
     <?php if (session()->has('error')): ?>
         <div class="alert alert-error"><?= session('error') ?></div>
     <?php endif; ?>
     
-    <!-- Informations personnelles -->
+    <!-- Carte d'informations personnelles -->
     <div class="profile-card">
         <h2 class="profile-title">
             Informations personnelles
+            <!-- Badge PRO si le compte est professionnel -->
             <?php if ($user->customer_type === 'professionnel'): ?>
                 <span class="badge-pro">PRO</span>
             <?php endif; ?>
         </h2>
         
+        <!-- Formulaire de modification des informations personnelles -->
         <form action="/profile/update" method="post">
             <div class="form-group">
                 <label for="username">Nom d'utilisateur</label>
@@ -170,7 +182,7 @@
                 </select>
             </div>
             
-            <!-- Champs professionnels -->
+            <!-- Champs professionnels affichés uniquement si "professionnel" -->
             <div id="pro_fields" class="pro-fields" style="display: <?= $user->customer_type === 'professionnel' ? 'block' : 'none' ?>;">
                 <h3 style="color: #8b4513; margin-bottom: 15px;">Informations professionnelles</h3>
                 
@@ -190,14 +202,16 @@
                 </div>
             </div>
             
+            <!-- Bouton pour enregistrer les modifications du profil -->
             <button type="submit" class="btn-primary">Enregistrer les modifications</button>
         </form>
     </div>
     
-    <!-- Changement de mot de passe -->
+    <!-- Carte pour le changement de mot de passe -->
     <div class="profile-card">
         <h2 class="profile-title">Changer le mot de passe</h2>
         
+        <!-- Formulaire de changement de mot de passe -->
         <form action="/profile/password" method="post">
             <div class="form-group">
                 <label for="current_password">Mot de passe actuel</label>
@@ -214,11 +228,14 @@
                 <input type="password" id="confirm_password" name="confirm_password" required minlength="8">
             </div>
             
+            <!-- Bouton pour changer le mot de passe -->
             <button type="submit" class="btn-danger">Changer le mot de passe</button>
         </form>
     </div>
 </div>
 
+
+<!-- Script pour afficher/masquer les champs professionnels selon le type de compte -->
 <script>
     function toggleProFields() {
         const customerType = document.getElementById('customer_type').value;

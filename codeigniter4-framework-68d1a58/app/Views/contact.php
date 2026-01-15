@@ -1,9 +1,14 @@
+<!--
+Page de contact du site TechnoPomme
+Affiche les coordonnées, horaires et un formulaire pour contacter l'équipe.
+-->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - TechnoPomme</title>
+    <!-- Style CSS interne pour la page contact -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -137,13 +142,17 @@
     </style>
 </head>
 <body>
+
+<!-- Inclusion du header commun -->
 <?= view('header') ?>
 
 <div class="container">
     <div class="contact-card">
+        <!-- Titre et sous-titre de la page -->
         <h1>📧 Contactez-nous</h1>
         <p class="subtitle">Une question ? Une remarque ? N'hésitez pas à nous contacter !</p>
 
+        <!-- Bloc d'informations de contact (adresse, téléphone, email, horaires) -->
         <div class="contact-info">
             <div class="info-item">
                 <span>📍</span>
@@ -177,12 +186,14 @@
             </div>
         </div>
 
+        <!-- Affichage du message de succès après envoi du formulaire -->
         <?php if (session()->has('success')): ?>
             <div class="alert alert-success">
                 <?= session('success') ?>
             </div>
         <?php endif; ?>
 
+        <!-- Affichage des erreurs de validation du formulaire -->
         <?php if (session()->has('errors')): ?>
             <div class="alert alert-error">
                 <ul style="margin-left: 20px;">
@@ -193,6 +204,7 @@
             </div>
         <?php endif; ?>
 
+        <!-- Formulaire de contact -->
         <form method="post" action="/contact/send">
             <div class="form-group">
                 <label>Nom complet *</label>
@@ -214,9 +226,11 @@
                 <textarea name="message" required><?= old('message') ?></textarea>
             </div>
 
+            <!-- Bouton d'envoi du formulaire -->
             <button type="submit" class="btn-submit">Envoyer le message</button>
         </form>
 
+        <!-- Lien retour vers la page d'accueil -->
         <a href="/" class="back-link">← Retour à l'accueil</a>
     </div>
 </div>

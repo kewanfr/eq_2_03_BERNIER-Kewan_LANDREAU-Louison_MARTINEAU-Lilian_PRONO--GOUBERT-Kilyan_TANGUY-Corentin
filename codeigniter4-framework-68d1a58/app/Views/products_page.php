@@ -156,8 +156,8 @@
         
         .product_img {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
+            max-height: 180px;
+            object-fit: contain;
             border-radius: 10px;
             margin-bottom: 12px;
         }
