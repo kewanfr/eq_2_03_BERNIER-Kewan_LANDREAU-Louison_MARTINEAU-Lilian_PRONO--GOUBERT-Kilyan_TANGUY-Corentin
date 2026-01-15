@@ -5,11 +5,22 @@ services:
       context: app_php
       target: builder
 
+    environment:
+      - CI_ENVIRONMENT=development
+      - PHP_DISPLAY_ERRORS=On
+      - PHP_ERROR_REPORTING=E_ALL
+    
     volumes:
       - ./codeigniter4-framework-68d1a58:/var/www/html
     ports:
       - '8080:80'
       - '8081:81'
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
   # mysql:
   #   container_name: mysql8
   #   image: docker.io/mysql:8.0

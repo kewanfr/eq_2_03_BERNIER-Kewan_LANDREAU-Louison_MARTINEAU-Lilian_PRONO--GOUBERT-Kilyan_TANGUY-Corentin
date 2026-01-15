@@ -6,16 +6,17 @@ echo ""
 
 cd "$(dirname "$0")/.."
 
-# Essai avec podman-compose (Linux personnel)
+# Détection de la commande podman compose disponible
 if command -v podman-compose &> /dev/null; then
-    podman-compose down
-# Sinon essai avec podman compose (PC IUT)
+    PODMAN_COMPOSE="podman-compose"
 elif podman compose version &> /dev/null; then
-    podman compose down
+    PODMAN_COMPOSE="podman compose"
 else
     echo "❌ Erreur : ni 'podman-compose' ni 'podman compose' n'est disponible."
     exit 1
 fi
+
+$PODMAN_COMPOSE down
 
 echo ""
 echo "🔓 Déconnexion de Docker Hub..."

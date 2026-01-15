@@ -6,7 +6,18 @@ echo ""
 
 cd "$(dirname "$0")/.."
 
-docker-compose down
+# Détection de la commande docker compose disponible
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE="docker-compose"
+elif docker compose version &> /dev/null; then
+    DOCKER_COMPOSE="docker compose"
+else
+    echo "❌ Erreur : ni 'docker-compose' ni 'docker compose' n'est disponible."
+    echo "   Vérifiez que Docker est bien installé."
+    exit 1
+fi
+
+$DOCKER_COMPOSE down
 
 if [ $? -eq 0 ]; then
     echo ""

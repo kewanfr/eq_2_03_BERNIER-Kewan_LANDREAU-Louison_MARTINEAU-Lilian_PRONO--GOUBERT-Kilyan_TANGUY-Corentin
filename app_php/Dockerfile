@@ -47,6 +47,11 @@ echo ----------------------------
 echo "Mise à jour du php.ini en dev"
 echo ----------------------------
 cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+# Activation de l'affichage des erreurs
+sed -i 's/display_errors = Off/display_errors = On/g' /usr/local/etc/php/php.ini
+sed -i 's/display_startup_errors = Off/display_startup_errors = On/g' /usr/local/etc/php/php.ini
+sed -i 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/g' /usr/local/etc/php/php.ini
+sed -i 's/log_errors = On/log_errors = On/g' /usr/local/etc/php/php.ini
 echo ----------------------------
 echo "Installation des extensions PHP :"
 echo ----------------------------
