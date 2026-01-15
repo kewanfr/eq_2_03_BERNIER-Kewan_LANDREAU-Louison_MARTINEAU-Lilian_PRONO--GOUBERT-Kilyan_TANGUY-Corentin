@@ -15,9 +15,11 @@ namespace CodeIgniter\Views\auth;
 </head>
 <body>
 <div class="color-light children-text-dark main_container">
+    <!-- Titre du formulaire d'inscription -->
     <label>S'inscrire</label>
     <div class="separator color-primary"></div>
 
+    <!-- Affichage des erreurs de validation -->
     <?php if (session('errors') !== null && !empty(session('errors'))): ?>
         <div class="errormessage">
             <ul>
@@ -28,54 +30,66 @@ namespace CodeIgniter\Views\auth;
         </div>
     <?php endif ?>
 
+    <!-- Formulaire d'inscription -->
     <form action="/auth/register" method="post">
 
+        <!-- Champ nom d'utilisateur -->
         <label for="username">Nom d'utilisateur:</label>
         <input id="username" type="text" name="username" class="textfield" required>
 
+        <!-- Champ email -->
         <label for="email">E-mail:</label><br>
         <input id="email" type="email" name="email" class="textfield" required><br>
 
+        <!-- Champ mot de passe -->
         <label for="password">Mot de passe:</label><br>
         <input id="password" type="password" name="password" class="textfield" required><br>
 
+        <!-- Champ confirmation du mot de passe -->
         <label for="password_confirm">Confirmez le mot de passe:</label><br>
         <input id="password_confirm" type="password" name="password_confirm" class="textfield" required><br>
 
-        <!-- Informations de contact (optionnelles) -->
+        <!-- Informations de contact optionnelles -->
         <label for="phone">Numéro de téléphone (optionnel):</label><br>
         <input id="phone" type="tel" name="phone" class="textfield" placeholder="Ex: 06 12 34 56 78"><br>
 
+        <!-- Champ adresse optionnelle -->
         <label for="address">Adresse (optionnel):</label><br>
         <textarea id="address" name="address" class="textfield" rows="3" placeholder="Adresse complète"></textarea><br>
 
-        <!-- Type de client -->
+        <!-- Sélection du type de compte (particulier ou professionnel) -->
         <label for="customer_type">Type de compte:</label><br>
         <select id="customer_type" name="customer_type" class="textfield" onchange="toggleProFields()" required>
             <option value="particulier">Particulier</option>
             <option value="professionnel">Professionnel (Restaurant, Bar, etc.)</option>
         </select><br>
 
-        <!-- Champs spécifiques pour les professionnels -->
+        <!-- Champs affichés uniquement pour les professionnels -->
         <div id="pro_fields" style="display: none;">
+            <!-- Nom de l'entreprise -->
             <label for="company_name">Nom de l'entreprise:</label><br>
             <input id="company_name" type="text" name="company_name" class="textfield"><br>
 
+            <!-- Numéro SIRET -->
             <label for="siret">Numéro SIRET:</label><br>
             <input id="siret" type="text" name="siret" class="textfield" pattern="[0-9]{14}" placeholder="14 chiffres"><br>
 
+            <!-- Numéro TVA intracommunautaire (optionnel) -->
             <label for="tva_number">N° TVA intracommunautaire (optionnel):</label><br>
             <input id="tva_number" type="text" name="tva_number" class="textfield" placeholder="Ex: FR12345678901"><br>
         </div>
 
+        <!-- Option "Se souvenir de moi" -->
         <div class="remember">
             <input id="remember" type="checkbox" name="remember">
             <label for="remember">Se souvenir de moi</label><br>
         </div>
 
+        <!-- Bouton de soumission du formulaire -->
         <input id="submit" type="submit" value="S'inscrire">
     </form>
 
+    <!-- Script pour afficher/masquer les champs professionnels selon le type de compte -->
     <script>
         function toggleProFields() {
             const customerType = document.getElementById('customer_type').value;
@@ -95,6 +109,7 @@ namespace CodeIgniter\Views\auth;
         }
     </script>
 
+    <!-- Lien vers la page de connexion -->
     <div class="separator color-primary"></div>
 
     <span>Déjà un compte? <a href="/login">Se connecter</a></span>
