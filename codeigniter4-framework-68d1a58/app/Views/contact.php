@@ -11,17 +11,22 @@ Affiche les coordonnées, horaires et un formulaire pour contacter l'équipe.
     <!-- Style CSS interne pour la page contact -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            min-height: 100%;
+        }
         body {
             font-family: 'Georgia', serif;
             background: linear-gradient(to bottom, #f5f5dc 0%, #d2b48c 100%);
             background-attachment: fixed;
-            padding: 20px;
-            padding-left: 0px;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 80px;
         }
 
         .contact-card {

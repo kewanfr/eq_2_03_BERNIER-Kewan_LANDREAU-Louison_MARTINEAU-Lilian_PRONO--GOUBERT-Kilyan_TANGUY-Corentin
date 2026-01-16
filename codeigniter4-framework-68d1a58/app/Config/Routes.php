@@ -21,6 +21,10 @@ $routes->post('/auth/register', 'Register::registerAction');
 $routes->get('/cookies/accept', 'Cookies::accept');
 $routes->get('/cookies/decline', 'Cookies::decline');
 
+// === Pages légales ===
+$routes->get('/mentions-legales', 'LegalController::mentionsLegales');
+$routes->get('/cgv', 'LegalController::cgv');
+
 // === Contact ===
 $routes->get('/contact', 'Contact::index');
 $routes->post('/contact/send', 'Contact::send');
