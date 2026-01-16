@@ -90,9 +90,9 @@
             <div class="footer-bottom-links">
                 <a href="/cookies">Politique de cookies</a>
                 <span class="separator">|</span>
-                <a href="#">Mentions légales</a>
+                <a href="/mentions-legales">Mentions légales</a>
                 <span class="separator">|</span>
-                <a href="#">CGV</a>
+                <a href="/cgv">CGV</a>
             </div>
         </div>
     </div>
@@ -114,11 +114,11 @@
     .site-footer {
         background: linear-gradient(135deg, #12372a 0%, #436850 100%);
         color: #fff9e9;
-        margin-top: auto !important; /* Pousse le footer en bas */
+        margin-top: 80px;
         font-family: 'Georgia', serif;
-        flex-shrink: 0;
-        width: 100%;
+        width: 100vw;
         box-sizing: border-box;
+        position : absolute;
     }
     
     .site-footer .footer-container {
