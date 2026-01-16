@@ -27,9 +27,14 @@ if [ $? -eq 0 ]; then
     docker exec php bash -lc "cd /var/www/html && composer install"
 
     # if writable directory does not exist, create it
-    if ! docker exec php bash -lc "[ -d /var/www/html/writable ]"; then
+    if ! docker exec php bash -lc "[ -f /var/www/html/writable/db_sae.db ]"; then
         echo "📁 Création du répertoire writable et migration de la base de données"
         sh scripts/reset_and_seed.sh
+    else
+        echo "✅ La base de données existe déjà. Aucune migration nécessaire."
+        chmod 775 codeigniter4-framework-68d1a58/writable
+        docker exec php bash -lc "chmod -R 777 /var/www/html/writable"
+    
     fi
 
 

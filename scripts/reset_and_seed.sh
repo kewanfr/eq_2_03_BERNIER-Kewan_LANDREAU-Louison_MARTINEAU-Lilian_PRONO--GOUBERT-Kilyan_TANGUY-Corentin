@@ -4,23 +4,51 @@ set -euo pipefail
 APP_DIR=/var/www/html
 DB_FILE="$APP_DIR/writable/db_sae.db"
 
-echo "[reset] Stopping containers (optional)"
+# Détection du runtime de conteneur disponible
+detect_runtime() {
+    if command -v docker &> /dev/null && docker ps &> /dev/null; then
+        echo "docker"
+    elif command -v podman &> /dev/null && podman ps &> /dev/null; then
+        echo "podman"
+    else
+        echo "none"
+    fi
+}
+
+RUNTIME=$(detect_runtime)
+
+# Fonction pour exécuter une commande selon le runtime
+run_cmd() {
+    local cmd="$1"
+    case "$RUNTIME" in
+        docker)
+            docker exec php bash -lc "$cmd"
+            ;;
+        podman)
+            podman exec php bash -lc "$cmd"
+            ;;
+        none)
+            # Exécution directe (utile si on est déjà dans le conteneur ou sur la machine hôte)
+            bash -lc "$cmd"
+            ;;
+    esac
+}
+
+echo "[info] Runtime détecté : $RUNTIME"
 
 echo "[reset] Ensuring writable directory exists"
-# mkdir -p "$APP_DIR/writable"
-# chmod 775 "$APP_DIR/writable"
-docker exec php bash -lc "mkdir -p '$APP_DIR/writable/cache' && chmod -R 777 '$APP_DIR/writable'"
+run_cmd "mkdir -p '$APP_DIR/writable/cache' && chmod -R 777 '$APP_DIR/writable'"
 
 echo "[reset] Removing SQLite database file: $DB_FILE"
-docker exec php bash -lc "rm -f '$DB_FILE'"
+run_cmd "rm -f '$DB_FILE'"
 
 echo "[migrate] Running migrations"
-docker exec php bash -lc "cd '$APP_DIR' && php spark migrate"
+run_cmd "cd '$APP_DIR' && php spark migrate"
 
 echo "[seed] Seeding MasterSeeder (users, products, roles)"
-docker exec php bash -lc "cd '$APP_DIR' && php spark db:seed MasterSeeder"
+run_cmd "cd '$APP_DIR' && php spark db:seed MasterSeeder"
 
 echo "[permissions] Setting correct permissions on database file"
-docker exec php bash -lc "chown www-data:www-data '$DB_FILE' && chmod 664 '$DB_FILE'"
+run_cmd "chown www-data:www-data '$DB_FILE' && chmod 664 '$DB_FILE'"
 
 echo "[done] Database reset and seeded successfully"
