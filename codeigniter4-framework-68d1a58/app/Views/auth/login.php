@@ -1,8 +1,3 @@
-
-<!--
-Vue de connexion utilisateur
-Affiche le formulaire de login, les erreurs et des liens utiles.
--->
 <?php
 namespace CodeIgniter\Views\auth;
 ?>
