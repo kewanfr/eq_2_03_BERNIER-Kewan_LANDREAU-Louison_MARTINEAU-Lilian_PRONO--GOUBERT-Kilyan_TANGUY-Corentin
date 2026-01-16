@@ -15,7 +15,7 @@ class Users extends UserModel
      * @param $email
      * @return array|object|null
      */
-    public function getUserByEmail($email) {x
+    public function getUserByEmail($email) {
         return $this->select('users.*')
             ->where('users.email', $email)
             ->first();
