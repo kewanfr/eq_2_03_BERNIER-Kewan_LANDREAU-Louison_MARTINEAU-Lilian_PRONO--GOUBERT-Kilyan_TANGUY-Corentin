@@ -4,7 +4,7 @@ services:
     build:
       context: app_php
       target: builder
-      network: host
+      # network: host
 
     environment:
       - CI_ENVIRONMENT=development
