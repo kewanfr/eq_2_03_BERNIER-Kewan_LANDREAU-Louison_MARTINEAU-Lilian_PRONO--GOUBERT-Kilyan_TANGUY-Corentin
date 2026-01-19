@@ -24,10 +24,3 @@ Le sujet complet est disponible dans le dossier [sujet](./sujet).
 ## Installation et utilisation
 
 Le guide d'installation et d'utilisation de l'application est disponible dans le dossier [documentation technique](./R313_documentation-technique).
-
-<iframe
-  src="./R313_documentation-technique/eq2_03 R313 - Documentation technique - S301 Kéwan Louison Lilian Kilyan et Corentin.pdf"
-  width="100%"
-  height="600px"
-  style="border: none;">
-</iframe>
